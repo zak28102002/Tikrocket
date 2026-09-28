@@ -12,7 +12,9 @@ import { cn } from "@/lib/cn";
 
 /** "vs previous 30 days" — or an honest reason there's no comparison. */
 function Comparison({ s, range }: { s: Summary; range: ResolvedRange }) {
-  if (s.value === null) return <span className="text-fg-3">Not available</span>;
+  if (s.value === null) {
+    return <span className="text-fg-3">{s.lifetime !== null ? "Tracking just started" : "Not available"}</span>;
+  }
   if (s.kind === "stock") {
     if (s.change === null) return <span className="text-fg-3">{range.label}</span>;
     return (

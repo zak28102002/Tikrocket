@@ -6,6 +6,7 @@ import type { PlatformKey } from "@/lib/profile-url";
 import type { AccountRef, AccountRow, AppRef, PostCard } from "@/lib/types";
 import { byAccount, chartSeries, periodSummary, type DailyRow, type Metric } from "@/server/analytics/series";
 import type { Viewer } from "@/server/auth/session";
+import { cached, workspaceVersion } from "@/server/cache";
 
 export const n = (b: bigint | number | null | undefined) => (b === null || b === undefined ? null : Number(b));
 export const mediaUrl = (assetId: string | null | undefined) => (assetId ? `/api/media/${assetId}` : null);
@@ -196,6 +197,12 @@ export function postCard(p: PostWithRefs, periodViews?: number | null): PostCard
  * published inside it, or the first in-period observation if tracking began later).
  */
 export async function topContent(viewer: Viewer, scope: Omit<Scope, "workspaceId">, range: ResolvedRange, limit = 12) {
+  const version = await workspaceVersion(viewer.workspace.id);
+  const key = `top:${viewer.workspace.id}:${version}:${JSON.stringify(scope)}:${range.from}:${range.to}:${range.key}:${limit}`;
+  return cached(key, () => computeTopContent(viewer, scope, range, limit));
+}
+
+async function computeTopContent(viewer: Viewer, scope: Omit<Scope, "workspaceId">, range: ResolvedRange, limit: number) {
   const where: Prisma.PostWhereInput = {
     workspaceId: viewer.workspace.id,
     ...(scope.appId ? { appId: scope.appId } : {}),

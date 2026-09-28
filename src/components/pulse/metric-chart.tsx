@@ -61,6 +61,11 @@ export function MetricChart({
           height={height}
           valueLabel={LABELS[metric].label}
           animationKey={range ? `${range.from}-${range.to}` : undefined}
+          emptyLabel={
+            kpis?.views.lifetime !== null && kpis?.views.lifetime !== undefined
+              ? "Tracking just started. Daily trends appear after the next update."
+              : "No data for this period yet"
+          }
         />
       ) : (
         <div className="px-3 pb-3">

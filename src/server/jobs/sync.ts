@@ -137,7 +137,8 @@ export async function runSyncJob(jobId: string) {
           })),
         });
       }
-      if (viewsGained !== null && viewsGained > 0) {
+      // Small drifts are noise in an activity feed; only surface meaningful jumps.
+      if (viewsGained !== null && viewsGained >= 1000) {
         await db.activityEvent.create({
           data: {
             workspaceId: account.workspaceId,

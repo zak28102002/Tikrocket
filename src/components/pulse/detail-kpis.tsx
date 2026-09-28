@@ -21,16 +21,17 @@ function Stat({ label, value, sub, className }: { label: string; value: number |
   );
 }
 
-const growth = (s: Summary) => (s.comparable ? <Delta value={s.changePct} size="sm" /> : null);
+const growth = (s: Summary) =>
+  s.value === null && s.lifetime !== null ? <span>Tracking just started</span> : s.comparable ? <Delta value={s.changePct} size="sm" /> : null;
 
 /** Five clearly-labelled figures: lifetime is never confused with the period. */
 export function DetailKpis({ kpis, periodLabel }: { kpis: Kpis; periodLabel: string }) {
   return (
     <div className="grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-3 lg:grid-cols-5 lg:gap-0 lg:divide-x lg:divide-[var(--line)]">
-      <Stat label="Lifetime views" value={kpis.views.lifetime} sub={<span>All time</span>} className="lg:pr-6" />
+      <Stat label="Lifetime views" value={kpis.views.lifetime} sub={kpis.views.lifetime !== null ? <span>All time</span> : null} className="lg:pr-6" />
       <Stat label={`Views · ${periodLabel.replace("Last ", "")}`} value={kpis.views.value} sub={growth(kpis.views) ?? <span>{kpis.views.today !== null ? `${signed(kpis.views.today)} today` : ""}</span>} className="lg:px-6" />
-      <Stat label="Likes" value={kpis.likes.value} sub={growth(kpis.likes) ?? <span>{compact(kpis.likes.lifetime)} lifetime</span>} className="lg:px-6" />
-      <Stat label="Posts" value={kpis.posts.value} sub={<span>{compact(kpis.posts.lifetime)} lifetime</span>} className="lg:px-6" />
+      <Stat label="Likes" value={kpis.likes.value} sub={growth(kpis.likes) ?? (kpis.likes.lifetime !== null ? <span>{compact(kpis.likes.lifetime)} lifetime</span> : null)} className="lg:px-6" />
+      <Stat label="Posts" value={kpis.posts.value} sub={kpis.posts.lifetime !== null ? <span>{compact(kpis.posts.lifetime)} lifetime</span> : null} className="lg:px-6" />
       <Stat
         label="Followers"
         value={kpis.followers.value}

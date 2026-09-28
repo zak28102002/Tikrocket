@@ -42,20 +42,20 @@ export function PageHeader({
         {showRange && <RangePicker />}
         <button
           onClick={openSearch}
-          className="hidden h-8 items-center gap-2 rounded-lg px-2.5 text-[13px] text-fg-3 shadow-[0_0_0_1px_var(--line-strong)] transition-colors hover:bg-surface-hover hover:text-fg-2 md:inline-flex"
+          className="hidden h-8 items-center gap-2 rounded-lg px-2.5 text-[13px] text-fg-3 shadow-[0_0_0_1px_var(--line-strong)] transition-colors hover:bg-surface-hover hover:text-fg-2 lg:inline-flex"
           aria-label="Search"
         >
           <Search size={14} />
           <span className="hidden xl:inline">Search</span>
           <kbd className="ml-1 hidden rounded bg-surface-hover px-1 font-sans text-[10.5px] text-fg-3 xl:inline">⌘K</kbd>
         </button>
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <Notifications />
         </div>
         <UserMenu
           align="end"
           trigger={
-            <button className="hidden rounded-full transition-opacity hover:opacity-85 md:block" aria-label="Account menu">
+            <button className="hidden rounded-full transition-opacity hover:opacity-85 lg:block" aria-label="Account menu">
               <Avatar name={viewer.user.name} url={viewer.user.avatarUrl} size={28} />
             </button>
           }

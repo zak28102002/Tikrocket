@@ -151,7 +151,7 @@ export function TimeChart({
           </defs>
           <g transform={`translate(${M.left},${M.top})`}>
             {/* Grid + y ticks */}
-            {ticks.map((t) => (
+            {hasData && ticks.map((t) => (
               <g key={t} transform={`translate(0,${y(t)})`}>
                 <line x1={0} x2={innerW} stroke="var(--chart-grid)" strokeWidth={1} />
                 <text x={-12} dy="0.32em" textAnchor="end" className="fill-[var(--fg-3)] text-[11px] tnum">

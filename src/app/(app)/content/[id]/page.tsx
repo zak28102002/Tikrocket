@@ -56,7 +56,7 @@ export default function PostPage() {
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(260px,340px)_minmax(0,1fr)]">
         <div>
           {p ? (
-            <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[20px] shadow-[0_0_0_1px_var(--line),0_24px_48px_-24px_rgba(0,0,0,.35)] lg:sticky lg:top-8">
+            <div className="relative mx-auto aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-[20px] lg:max-w-none shadow-[0_0_0_1px_var(--line),0_24px_48px_-24px_rgba(0,0,0,.35)] lg:sticky lg:top-8">
               <Thumb post={p} className="absolute inset-0" sizes="large" />
               <div className="absolute top-3 left-3 flex h-7 items-center gap-1.5 rounded-full bg-black/40 px-2.5 text-[12px] font-medium text-white backdrop-blur-md">
                 <PlatformIcon platform={p.platform} size={12} /> {PLATFORM_META[p.platform].label}

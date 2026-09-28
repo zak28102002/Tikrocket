@@ -24,7 +24,7 @@ for (const w of widths) {
     await page.goto(`${base}${p}`, { waitUntil: "networkidle", timeout: 60000 });
     await page.waitForTimeout(Number(opts.wait ?? 1600));
     await page.evaluate(async () => {
-      for (let y = 0; y < document.body.scrollHeight; y += 600) {
+      for (let y = 0; y < Math.min(document.body.scrollHeight, 9000); y += 600) {
         window.scrollTo(0, y);
         document.querySelectorAll("img[loading=lazy]").forEach((i) => (i.loading = "eager"));
         await new Promise((r) => setTimeout(r, 60));

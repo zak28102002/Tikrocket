@@ -35,10 +35,12 @@ export async function login(input: z.infer<typeof LoginInput>) {
   await createSession(user.id);
 }
 
-export const needsSetup = async () => (await db.user.count()) === 0;
+/** First-run setup is offered until a real (non-demo) workspace exists. */
+export const needsSetup = async () => (await db.workspace.count({ where: { isDemo: false } })) === 0;
 
 export async function setup(input: z.infer<typeof SetupInput>) {
   if (!(await needsSetup())) throw badRequest("Pulse is already set up. Sign in instead.");
+  if (await db.user.findUnique({ where: { email: input.email } })) throw badRequest("That email is already registered. Use a different one.");
   const user = await db.user.create({
     data: {
       name: input.name,

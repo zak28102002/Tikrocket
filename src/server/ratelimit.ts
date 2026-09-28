@@ -17,3 +17,9 @@ export function rateLimit(key: string, limit: number, windowMs: number) {
   b.count += 1;
   return { ok: b.count <= limit, retryAfterMs: b.resetAt - now };
 }
+
+/** Check without consuming (used to count only failed attempts). */
+export function isLimited(key: string, limit: number) {
+  const b = buckets.get(key);
+  return Boolean(b && b.resetAt > Date.now() && b.count >= limit);
+}

@@ -22,7 +22,7 @@ import { useCan } from "@/components/providers";
 import { useRange, useRangeHref } from "@/hooks/use-range";
 import { useRefreshAccount } from "@/hooks/use-refresh";
 import { api, ApiError } from "@/lib/api";
-import { compact, full, rate, refreshLabel, timeAgo } from "@/lib/format";
+import { compact, full, rate, refreshLabel, timeAgo, timeUntil } from "@/lib/format";
 import { PLATFORM_META } from "@/lib/platforms";
 import type { AccountDetailResponse } from "@/lib/types";
 import { cn } from "@/lib/cn";
@@ -133,7 +133,7 @@ export default function AccountPage() {
           {a && <StatusBadge status={refreshing ? "SYNCING" : a.status} message={a.userError} />}
           <span className="text-[12px] text-fg-3">
             {a ? `Updated ${timeAgo(a.lastSyncedAt).toLowerCase()}` : ""}
-            {a?.nextRefreshAt && a.refreshMinutes !== 0 ? ` · next ${timeAgo(a.nextRefreshAt).replace(" ago", "")}` : ""}
+            {a?.nextRefreshAt && a.refreshMinutes !== 0 ? ` · next update ${timeUntil(a.nextRefreshAt)}` : ""}
           </span>
           {a && can.edit && (
             <Menu>

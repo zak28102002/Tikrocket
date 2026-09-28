@@ -89,3 +89,13 @@ export function refreshLabel(minutes: number | null | undefined) {
   const h = minutes / 60;
   return h === 1 ? "Every hour" : `Every ${h} hours`;
 }
+
+/** Future relative time: "in 4h", "in 12m", "soon". */
+export function timeUntil(iso: string | null | undefined, now = Date.now()): string {
+  if (!iso) return "not scheduled";
+  const m = Math.round((new Date(iso).getTime() - now) / 60_000);
+  if (m <= 1) return "soon";
+  if (m < 60) return `in ${m}m`;
+  const h = Math.round(m / 60);
+  return h < 48 ? `in ${h}h` : `in ${Math.round(h / 24)}d`;
+}

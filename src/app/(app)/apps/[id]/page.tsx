@@ -181,6 +181,22 @@ export default function AppPage() {
         </div>
       ) : (
         <>
+          {d && d.accounts.some((a) => a.status === "UNAVAILABLE") && (
+            <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-warning-soft px-4 py-3 text-[13px]">
+              <p className="text-fg-2">
+                <span className="font-medium text-warning">
+                  {d.accounts.filter((a) => a.status === "UNAVAILABLE").length} of {d.accounts.length} accounts are waiting for a data source.
+                </span>{" "}
+                Their metrics show as N/A until a{" "}
+                {[...new Set(d.accounts.filter((a) => a.status === "UNAVAILABLE").map((a) => PLATFORM_META[a.platform].label))].join(" / ")} source is configured.
+              </p>
+              {can.admin && (
+                <Link href="/settings" className="text-[12.5px] font-medium text-fg hover:underline hover:underline-offset-4">
+                  Open settings
+                </Link>
+              )}
+            </div>
+          )}
           <div className={cn("transition-opacity", q.isPlaceholderData && "opacity-60")}>
             {d ? <DetailKpis kpis={d.kpis} periodLabel={d.range.label} /> : <Skeleton className="h-20 w-full" />}
           </div>
