@@ -1,6 +1,6 @@
 import next from "eslint-config-next";
 
-export default [
+const config = [
   ...next,
   {
     rules: {
@@ -9,3 +9,5 @@ export default [
   },
   { ignores: [".next/**", "node_modules/**", "src/generated/**", "playwright-report/**", "test-results/**"] },
 ];
+
+export default config;

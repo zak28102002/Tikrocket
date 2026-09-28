@@ -20,8 +20,8 @@ export const SetupInput = z.object({
 
 export const AcceptInviteInput = z.object({
   token: z.string().min(10).max(200),
-  name: z.string().trim().min(1, "Enter your name.").max(80),
-  password: z.string().min(10, "Use at least 10 characters.").max(200),
+  name: z.string().trim().max(80).optional(),
+  password: z.string().min(1, "Enter a password.").max(200),
 });
 
 // Unknown emails still pay for a real argon2 verify, so timing doesn't reveal accounts.
@@ -78,6 +78,8 @@ export async function acceptInvite(input: z.infer<typeof AcceptInviteInput>) {
       throw new AppError(401, "invalid_credentials", "That password doesn't match your existing account.");
     }
   } else {
+    if (!input.name) throw badRequest("Enter your name.");
+    if (input.password.length < 10) throw badRequest("Use at least 10 characters for your password.");
     user = await db.user.create({ data: { email: inv.email, name: input.name, passwordHash: await hashPassword(input.password) } });
   }
   await db.$transaction([

@@ -19,6 +19,6 @@ export async function compareApps(viewer: Viewer, input: RangeInput, metric: Met
       series: bucketize(chartSeries(scoped, range, metric), 120, METRIC_KIND[metric]),
     };
   });
-  rows.sort((a, b) => (b.summary.value ?? -1) - (a.summary.value ?? -1));
+  // Creation order is preserved so each app keeps a stable color across metrics and ranges.
   return { range, metric, apps: rows };
 }

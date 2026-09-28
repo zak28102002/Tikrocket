@@ -10,6 +10,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  agentRules: false,
   serverExternalPackages: ["@node-rs/argon2", "sharp", "pg"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

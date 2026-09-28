@@ -1,0 +1,429 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Pulse design tokens
+   Every color, radius, shadow and motion value in the product comes from here.
+   Light is primary; dark is a separately tuned palette, not an inversion.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg: #f6f6f4;
+  --surface: #ffffff;
+  --surface-2: #fafaf9;
+  --surface-hover: #f3f3f1;
+  --surface-active: #ececea;
+  --overlay: rgba(12, 12, 10, 0.32);
+
+  /* Lines */
+  --line: rgba(24, 24, 20, 0.07);
+  --line-strong: rgba(24, 24, 20, 0.12);
+  --line-focus: rgba(54, 86, 224, 0.45);
+
+  /* Ink */
+  --fg: #121211;
+  --fg-2: #4f4f4a;
+  --fg-3: #85857e;
+  --fg-4: #b3b3ab;
+  --fg-inverse: #ffffff;
+
+  /* Accent: cobalt */
+  --accent: #3656e0;
+  --accent-hover: #2c49c7;
+  --accent-press: #253eaa;
+  --accent-soft: rgba(54, 86, 224, 0.08);
+  --accent-softer: rgba(54, 86, 224, 0.045);
+  --accent-fg: #ffffff;
+
+  /* Semantic */
+  --positive: #178a45;
+  --positive-soft: rgba(23, 138, 69, 0.08);
+  --negative: #c93a2e;
+  --negative-soft: rgba(201, 58, 46, 0.08);
+  --warning: #b26b00;
+  --warning-soft: rgba(178, 107, 0, 0.09);
+
+  /* Platforms (tiny indicators only) */
+  --platform-tiktok: #1f1f1f;
+  --platform-instagram: #c13584;
+  --platform-youtube: #e0302a;
+
+  /* Charts */
+  --chart-line: var(--accent);
+  --chart-grid: rgba(24, 24, 20, 0.055);
+  --chart-axis: var(--fg-3);
+  --series-1: #3656e0;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+
+  /* Elevation */
+  --shadow-xs: 0 1px 0 rgba(24, 24, 20, 0.03);
+  --shadow-sm: 0 1px 2px rgba(24, 24, 20, 0.04), 0 1px 1px rgba(24, 24, 20, 0.02);
+  --shadow-md: 0 4px 12px -2px rgba(24, 24, 20, 0.06), 0 2px 4px -2px rgba(24, 24, 20, 0.04);
+  --shadow-lg: 0 24px 48px -12px rgba(24, 24, 20, 0.18), 0 8px 16px -8px rgba(24, 24, 20, 0.08);
+  --ring-card: 0 0 0 1px var(--line);
+
+  /* Skeleton */
+  --skeleton: #efefec;
+  --skeleton-shine: #f7f7f5;
+}
+
+/* Theme is resolved before first paint by an inline script (system → light/dark). */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0c0c0e;
+  --surface: #141417;
+  --surface-2: #111113;
+  --surface-hover: #1b1b1f;
+  --surface-active: #232328;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --line: rgba(255, 255, 255, 0.065);
+  --line-strong: rgba(255, 255, 255, 0.11);
+  --line-focus: rgba(120, 144, 255, 0.55);
+  --fg: #ededee;
+  --fg-2: #a6a6ad;
+  --fg-3: #6f6f78;
+  --fg-4: #4a4a52;
+  --fg-inverse: #0c0c0e;
+  --accent: #6a84ff;
+  --accent-hover: #7d94ff;
+  --accent-press: #5872f0;
+  --accent-soft: rgba(106, 132, 255, 0.13);
+  --accent-softer: rgba(106, 132, 255, 0.07);
+  --accent-fg: #ffffff;
+  --positive: #45c07a;
+  --positive-soft: rgba(69, 192, 122, 0.12);
+  --negative: #f26d61;
+  --negative-soft: rgba(242, 109, 97, 0.12);
+  --warning: #e3a33a;
+  --warning-soft: rgba(227, 163, 58, 0.13);
+  --platform-tiktok: #e9e9e9;
+  --platform-instagram: #e05ca8;
+  --platform-youtube: #ff5a52;
+  --chart-grid: rgba(255, 255, 255, 0.05);
+  --series-1: #6a84ff;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #22a02a;
+  --shadow-xs: 0 1px 0 rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 16px -4px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 24px 60px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --skeleton: #1b1b1f;
+  --skeleton-shine: #222227;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-fg-4: var(--fg-4);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-press: var(--accent-press);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-softer: var(--accent-softer);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-negative: var(--negative);
+  --color-negative-soft: var(--negative-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-skeleton: var(--skeleton);
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+
+  --breakpoint-xs: 30rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv11", "ss01";
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--fg);
+  }
+  :focus-visible {
+    outline: 2px solid var(--line-focus);
+    outline-offset: 2px;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: default;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--fg-4);
+  }
+}
+
+@layer utilities {
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  .display {
+    font-family: var(--font-display);
+    letter-spacing: -0.035em;
+    font-feature-settings: "ss01", "cv11";
+  }
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--ring-card), var(--shadow-xs);
+  }
+  .hairline-b {
+    box-shadow: inset 0 -1px 0 var(--line);
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 48px), transparent);
+  }
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  background: linear-gradient(90deg, var(--skeleton) 0%, var(--skeleton-shine) 40%, var(--skeleton) 80%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@keyframes tip-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px) scale(0.98);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+@keyframes pop-out {
+  to {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.98);
+  }
+}
+.menu-anim[data-state="open"] {
+  animation: pop-in 0.16s var(--ease-out-quint, ease-out);
+}
+.menu-anim[data-state="closed"] {
+  animation: pop-out 0.1s ease-in forwards;
+}
+
+/* ── Date picker (react-day-picker, unstyled + our tokens) ── */
+.rdp-root {
+  --cell: 34px;
+  position: relative;
+  font-size: 12.5px;
+}
+.rdp-months {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.rdp-month_caption {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
+  font-weight: 600;
+  color: var(--fg);
+  font-size: 13px;
+}
+.rdp-nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 2px;
+  z-index: 1;
+}
+.rdp-button_previous,
+.rdp-button_next {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  color: var(--fg-2);
+}
+.rdp-button_previous:hover,
+.rdp-button_next:hover {
+  background: var(--surface-hover);
+}
+.rdp-chevron {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+.rdp-month_grid {
+  border-collapse: separate;
+  border-spacing: 0 2px;
+}
+.rdp-weekday {
+  width: var(--cell);
+  height: 28px;
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--fg-3);
+}
+.rdp-day {
+  width: var(--cell);
+  height: var(--cell);
+  padding: 0;
+  text-align: center;
+}
+.rdp-day_button {
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 8px;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  transition: background 0.12s;
+}
+.rdp-day_button:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+.rdp-today .rdp-day_button {
+  font-weight: 600;
+  color: var(--accent);
+}
+.rdp-outside .rdp-day_button,
+.rdp-disabled .rdp-day_button {
+  color: var(--fg-4);
+}
+.rdp-range_middle {
+  background: var(--accent-soft);
+}
+.rdp-range_middle .rdp-day_button {
+  border-radius: 0;
+  color: var(--fg);
+}
+.rdp-range_start {
+  background: linear-gradient(to right, transparent 50%, var(--accent-soft) 50%);
+}
+.rdp-range_end {
+  background: linear-gradient(to left, transparent 50%, var(--accent-soft) 50%);
+}
+.rdp-range_start.rdp-range_end {
+  background: none;
+}
+.rdp-selected .rdp-day_button {
+  font-weight: 600;
+}
+.rdp-range_start .rdp-day_button,
+.rdp-range_end .rdp-day_button {
+  background: var(--accent);
+  color: #fff;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
