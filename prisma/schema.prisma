@@ -1,0 +1,363 @@
+// Pulse data model.
+//
+// Conventions
+// - Every metric column is nullable. NULL means "not publicly available" and is
+//   rendered as N/A. It is never coerced to 0.
+// - Snapshots are append-only. Latest values are denormalized onto the entity
+//   for fast reads, and a daily rollup powers range analytics.
+// - Everything a user can see is scoped by workspaceId.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum Platform {
+  TIKTOK
+  INSTAGRAM
+  YOUTUBE
+}
+
+enum AccountStatus {
+  PENDING // created, first collection queued
+  SYNCING // collection in progress
+  HEALTHY // last collection succeeded
+  ERROR // last collection failed (see userError)
+  UNAVAILABLE // no data source configured for this platform
+  PAUSED
+}
+
+enum ViewsSource {
+  PROFILE // platform reports lifetime profile views (e.g. YouTube)
+  POSTS // sum of latest known views of all tracked posts
+}
+
+enum JobTrigger {
+  INITIAL
+  MANUAL
+  SCHEDULED
+}
+
+enum JobStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  PARTIAL
+  FAILED
+  CANCELLED
+}
+
+enum JobStage {
+  QUEUED
+  CHECKING_PROFILE
+  FINDING_CONTENT
+  COLLECTING_METRICS
+  FINALIZING
+  DONE
+}
+
+enum ActivityType {
+  ACCOUNT_ADDED
+  ACCOUNT_UPDATED
+  POST_DETECTED
+  VIEWS_MILESTONE
+  SYNC_FAILED
+}
+
+// ─── Identity ──────────────────────────────────────────────────────────────
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String
+  passwordHash String
+  avatarUrl    String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  memberships  Membership[]
+  sessions     Session[]
+}
+
+model Session {
+  id                String   @id @default(cuid())
+  tokenHash         String   @unique
+  userId            String
+  activeWorkspaceId String?
+  expiresAt         DateTime
+  createdAt         DateTime @default(now())
+  lastSeenAt        DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Workspace {
+  id                    String          @id @default(cuid())
+  name                  String
+  slug                  String          @unique
+  isDemo                Boolean         @default(false)
+  timezone              String          @default("UTC")
+  defaultRefreshMinutes Int             @default(360)
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  memberships           Membership[]
+  invitations           Invitation[]
+  apps                  App[]
+  accounts              SocialAccount[]
+  posts                 Post[]
+  activity              ActivityEvent[]
+}
+
+model Membership {
+  id          String    @id @default(cuid())
+  userId      String
+  workspaceId String
+  role        Role      @default(MEMBER)
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
+}
+
+model Invitation {
+  id          String    @id @default(cuid())
+  workspaceId String
+  email       String
+  role        Role      @default(MEMBER)
+  tokenHash   String    @unique
+  invitedById String?
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+}
+
+// ─── Portfolio ─────────────────────────────────────────────────────────────
+
+model App {
+  id          String          @id @default(cuid())
+  workspaceId String
+  name        String
+  slug        String
+  description String?
+  iconAssetId String?
+  iconSeed    Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  workspace   Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  iconAsset   MediaAsset?     @relation("AppIcon", fields: [iconAssetId], references: [id], onDelete: SetNull)
+  accounts    SocialAccount[]
+  posts       Post[]
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId, createdAt])
+}
+
+model SocialAccount {
+  id                String                  @id @default(cuid())
+  workspaceId       String
+  appId             String
+  platform          Platform
+  /// Normalized handle: lowercase, no leading @. For YouTube channel-id URLs this is the channel id.
+  username          String
+  platformAccountId String?
+  displayName       String?
+  profileUrl        String
+  avatarAssetId     String?
+  bio               String?
+  isVerified        Boolean?
+  followers         BigInt?
+  following         BigInt?
+  totalLikes        BigInt?
+  totalViews        BigInt?
+  postCount         BigInt?
+  viewsSource       ViewsSource?
+  status            AccountStatus           @default(PENDING)
+  connectorId       String?
+  userError         String?
+  devErrorDetail    String?
+  /// Minutes between automatic refreshes. NULL = workspace default, 0 = manual only.
+  refreshMinutes    Int?
+  lastSyncedAt      DateTime?
+  nextRefreshAt     DateTime?
+  trackingSince     DateTime?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  workspace         Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  app               App                     @relation(fields: [appId], references: [id], onDelete: Cascade)
+  avatarAsset       MediaAsset?             @relation("AccountAvatar", fields: [avatarAssetId], references: [id], onDelete: SetNull)
+  posts             Post[]
+  snapshots         AccountMetricSnapshot[]
+  daily             AccountDailyMetric[]
+  jobs              RefreshJob[]
+  activity          ActivityEvent[]
+
+  @@unique([workspaceId, platform, username])
+  @@index([appId])
+  @@index([workspaceId, status])
+  @@index([nextRefreshAt])
+}
+
+model Post {
+  id               String               @id @default(cuid())
+  accountId        String
+  appId            String
+  workspaceId      String
+  platform         Platform
+  platformPostId   String
+  url              String
+  thumbnailAssetId String?
+  thumbnailUrl     String?
+  caption          String?
+  publishedAt      DateTime?
+  durationSec      Int?
+  views            BigInt?
+  likes            BigInt?
+  comments         BigInt?
+  shares           BigInt?
+  firstSeenAt      DateTime             @default(now())
+  lastSyncedAt     DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  account          SocialAccount        @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  app              App                  @relation(fields: [appId], references: [id], onDelete: Cascade)
+  workspace        Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  thumbnailAsset   MediaAsset?          @relation("PostThumbnail", fields: [thumbnailAssetId], references: [id], onDelete: SetNull)
+  snapshots        PostMetricSnapshot[]
+  activity         ActivityEvent[]
+
+  @@unique([accountId, platformPostId])
+  @@index([workspaceId, views(sort: Desc)])
+  @@index([workspaceId, publishedAt(sort: Desc)])
+  @@index([appId, views(sort: Desc)])
+  @@index([accountId, publishedAt(sort: Desc)])
+}
+
+// ─── History ───────────────────────────────────────────────────────────────
+
+model AccountMetricSnapshot {
+  id          String        @id @default(cuid())
+  accountId   String
+  jobId       String?
+  capturedAt  DateTime      @default(now())
+  followers   BigInt?
+  following   BigInt?
+  totalLikes  BigInt?
+  /// Profile-level views as reported by the platform (NULL when not exposed).
+  totalViews  BigInt?
+  postCount   BigInt?
+  /// Sums over all tracked posts (latest known values) at capture time.
+  postViews   BigInt?
+  postLikes   BigInt?
+  /// The value analytics treats as the account's lifetime views.
+  views       BigInt?
+  viewsSource ViewsSource?
+  account     SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId, capturedAt])
+}
+
+model PostMetricSnapshot {
+  id         String   @id @default(cuid())
+  postId     String
+  capturedAt DateTime @default(now())
+  views      BigInt?
+  likes      BigInt?
+  comments   BigInt?
+  shares     BigInt?
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, capturedAt])
+}
+
+/// Last known cumulative values per account per calendar day (workspace timezone).
+/// Derived from snapshots; safe to rebuild.
+model AccountDailyMetric {
+  id        String        @id @default(cuid())
+  accountId String
+  date      DateTime      @db.Date
+  followers BigInt?
+  views     BigInt?
+  likes     BigInt?
+  posts     BigInt?
+  comments  BigInt?
+  shares    BigInt?
+  updatedAt DateTime      @updatedAt
+  account   SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, date])
+  @@index([date])
+}
+
+// ─── Jobs & activity ──────────────────────────────────────────────────────
+
+model RefreshJob {
+  id             String        @id @default(cuid())
+  accountId      String
+  trigger        JobTrigger
+  status         JobStatus     @default(QUEUED)
+  stage          JobStage      @default(QUEUED)
+  attempts       Int           @default(0)
+  maxAttempts    Int           @default(3)
+  runAfter       DateTime      @default(now())
+  lockedAt       DateTime?
+  lockedBy       String?
+  startedAt      DateTime?
+  finishedAt     DateTime?
+  postsFound     Int?
+  newPosts       Int?
+  userError      String?
+  devErrorDetail String?
+  createdAt      DateTime      @default(now())
+  account        SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([status, runAfter])
+  @@index([accountId, createdAt])
+}
+
+model ActivityEvent {
+  id          String         @id @default(cuid())
+  workspaceId String
+  type        ActivityType
+  accountId   String?
+  postId      String?
+  payload     Json?
+  createdAt   DateTime       @default(now())
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  account     SocialAccount? @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  post        Post?          @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, createdAt(sort: Desc)])
+}
+
+// ─── Media ────────────────────────────────────────────────────────────────
+
+model MediaAsset {
+  id        String          @id @default(cuid())
+  mime      String
+  bytes     Bytes
+  sha256    String          @unique
+  width     Int?
+  height    Int?
+  sourceUrl String?
+  createdAt DateTime        @default(now())
+  appIcons  App[]           @relation("AppIcon")
+  avatars   SocialAccount[] @relation("AccountAvatar")
+  thumbs    Post[]          @relation("PostThumbnail")
+}
