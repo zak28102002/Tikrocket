@@ -62,14 +62,43 @@ Pulse uses official APIs and licensed providers only. It never bypasses logins, 
 | Platform | Source | Configure | Notes |
 |---|---|---|---|
 | YouTube | YouTube Data API v3 (official) | `YOUTUBE_API_KEY` | Subscribers (unless hidden), lifetime channel views, video views, likes and comments. Shares aren't exposed (N/A). |
-| Instagram | Graph API Business Discovery (official) | `META_IG_BUSINESS_ACCOUNT_ID`, `META_ACCESS_TOKEN` | Works for Business/Creator profiles. Followers, following, media count, likes and comments. Views and shares aren't exposed for third-party accounts (N/A). |
-| TikTok | Pluggable licensed data provider | `TIKTOK_PROVIDER=http`, `TIKTOK_PROVIDER_BASE_URL`, `TIKTOK_PROVIDER_API_KEY` | TikTok has no official API for other profiles' metrics from a URL. Plug in a provider; until then TikTok accounts show *Data unavailable*. |
+| TikTok | [EnsembleData](https://ensembledata.com) (licensed provider) | `TIKTOK_PROVIDER=ensembledata`, `ENSEMBLEDATA_TOKEN` | Followers, following, total likes, video count, and per-video views, likes, comments and shares. TikTok has no official API for this, so a provider is required. Without one, TikTok accounts show *Data unavailable*. |
+| Instagram | Graph API Business Discovery (official, default) | `META_IG_BUSINESS_ACCOUNT_ID`, `META_ACCESS_TOKEN` | Business/Creator profiles only. Followers, following, media count, likes and comments. Views and shares aren't exposed (N/A). |
+| Instagram | EnsembleData (opt-in) | `INSTAGRAM_PROVIDER=ensembledata`, `ENSEMBLEDATA_TOKEN` | Any public profile, **including reel view counts**. Shares aren't exposed (N/A). |
 
 **Settings → Data sources** shows what's configured (secrets are never sent to the browser).
 
-### TikTok provider contract
+### EnsembleData
 
-`src/server/connectors/tiktok/providers/http.ts` speaks a small, documented JSON contract (`GET /tiktok/profile?username=`, `GET /tiktok/videos?username=&limit=`). Point it at a licensed vendor, or at a thin proxy in front of one. To support a vendor natively, add one file implementing `TikTokDataProvider` and a case in `tiktok/index.ts`.
+1. Create an account at ensembledata.com and copy your API token.
+2. Set `ENSEMBLEDATA_TOKEN` and `TIKTOK_PROVIDER=ensembledata`. Optionally set `INSTAGRAM_PROVIDER=ensembledata` too.
+3. Cost: EnsembleData bills in *units* per request. Each TikTok refresh makes 1 profile call plus ⌈posts / 10⌉ post calls (first sync: 100 posts; later syncs: the latest 50). Instagram is similar (1 profile call plus reels calls). At the default 6-hour interval, that's 4 refreshes per account per day. Use a longer interval in **Settings → Automatic refresh**, or per account, to spend fewer units.
+
+The adapters (`src/server/connectors/tiktok/providers/ensembledata.ts`, `src/server/connectors/instagram/ensembledata.ts`) accept both the snake_case and camelCase response shapes EnsembleData returns. Missing numbers stay N/A. Vendor errors map to calm messages: not found, private, rate-limited/out of units, and token problems (which point admins to Settings).
+
+### Other TikTok providers
+
+`src/server/connectors/tiktok/providers/http.ts` speaks a small, documented JSON contract (`GET /tiktok/profile?username=`, `GET /tiktok/videos?username=&limit=`, selected with `TIKTOK_PROVIDER=http`). To support another vendor natively, add one file implementing `TikTokDataProvider` and a case in `tiktok/index.ts`.
+
+---
+
+## Deploying to Railway
+
+Pulse runs as two services from the same repository and Docker image, plus Postgres.
+
+1. **Create a project** on Railway and add the **PostgreSQL** plugin.
+2. **Web service**: *New → GitHub repo* → this repository. It uses `railway.json` automatically: Dockerfile build, `pnpm db:deploy` as the pre-deploy step (migrations), `pnpm start`, and health check `/api/health`. Set these variables:
+   - `DATABASE_URL` = `${{Postgres.DATABASE_URL}}`
+   - `APP_URL` = your public URL, e.g. `https://pulse-production.up.railway.app` (used for origin checks, invite links and secure cookies)
+   - `CRON_SECRET` = a long random string
+   - Data sources: `YOUTUBE_API_KEY`, `TIKTOK_PROVIDER=ensembledata`, `ENSEMBLEDATA_TOKEN`, and optionally `INSTAGRAM_PROVIDER`, `META_*`
+   - Generate a public domain under *Settings → Networking*.
+3. **Worker service**: add the same repo again as a second service. Under *Settings → Config-as-code*, set the path to `railway.worker.json` (start command `pnpm worker`, always restart, no public domain). Share the same variables. Railway's *shared variables* are easiest.
+4. Open the web URL. The first visit shows **Set up Pulse**. Create the admin account and workspace, then invite teammates from **Settings → Members**.
+
+Leave `PULSE_ENABLE_DEMO` unset in production. The worker also recovers stale jobs and schedules refreshes every minute, so no cron job is needed on Railway. `/api/cron/tick` exists only for hosts without a long-running worker.
+
+Local image check: `docker build -t pulse . && docker run --rm -e DATABASE_URL=… -p 3000:3000 pulse`.
 
 ---
 

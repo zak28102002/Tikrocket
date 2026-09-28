@@ -1,0 +1,18 @@
+{
+  "data": {
+    "user": {
+      "uid": "6812345678901234567",
+      "unique_id": "CatrotApp",
+      "nickname": "Catrot",
+      "signature": "The cat that guards your screen time",
+      "avatar_larger": { "url_list": ["https://p16.tiktokcdn.com/avatar-large.jpeg"] },
+      "verification_type": 0,
+      "custom_verify": "",
+      "secret": 0,
+      "follower_count": 21400,
+      "following_count": 12,
+      "total_favorited": 142000,
+      "aweme_count": 48
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "data": {
+    "data": [
+      {
+        "aweme_id": "7412000000000000001",
+        "desc": "POV: your cat locks your phone at 11pm",
+        "create_time": 1790000000,
+        "is_top": 1,
+        "video": { "duration": 23100, "origin_cover": { "url_list": ["https://p16/cover1.jpeg"] } },
+        "statistics": { "play_count": 2410000, "digg_count": 182000, "comment_count": 1200, "share_count": 7800 }
+      },
+      {
+        "aweme_id": "7412000000000000002",
+        "desc": "Day 14 of Catrot vs. my doomscrolling",
+        "create_time": 1790086400,
+        "video": { "duration": 15, "cover": { "url_list": ["https://p16/cover2.jpeg"] } },
+        "statistics": { "play_count": 50000, "digg_count": 4000 }
+      },
+      { "aweme_id": "7412000000000000001", "statistics": { "play_count": 1 } }
+    ],
+    "nextCursor": 1789999999000
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "data": {
+    "pk": "5566778899",
+    "username": "MealzyApp",
+    "full_name": "Mealzy · Recipes",
+    "biography": "Plan a week of meals in 30 seconds.",
+    "profile_pic_url_hd": "https://scontent.cdninstagram.com/pic.jpg",
+    "is_verified": false,
+    "is_private": false,
+    "follower_count": 9400,
+    "following_count": 150,
+    "media_count": 206
+  }
+}

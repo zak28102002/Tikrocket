@@ -16,6 +16,16 @@ const schema = z.object({
   TIKTOK_PROVIDER: z.string().default(""),
   TIKTOK_PROVIDER_BASE_URL: z.string().default(""),
   TIKTOK_PROVIDER_API_KEY: z.string().default(""),
+  ENSEMBLEDATA_TOKEN: z.string().default(""),
+  ENSEMBLEDATA_BASE_URL: z
+    .string()
+    .default("")
+    .transform((v) => v || "https://ensembledata.com/apis"),
+  /** "meta" (official Graph API, default) or "ensembledata" (adds reel view counts). */
+  INSTAGRAM_PROVIDER: z
+    .string()
+    .default("meta")
+    .transform((v) => (v === "ensembledata" ? ("ensembledata" as const) : ("meta" as const))),
   WORKER_CONCURRENCY: z.coerce.number().int().min(1).max(16).default(3),
   NODE_ENV: z.string().default("development"),
 });

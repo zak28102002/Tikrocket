@@ -4,6 +4,7 @@ import { PLATFORMS } from "@/lib/platforms";
 import type { PlatformConnector } from "./types";
 import { YouTubeConnector } from "./youtube";
 import { InstagramConnector } from "./instagram";
+import { InstagramEnsembleConnector } from "./instagram/ensembledata";
 import { TikTokConnector } from "./tiktok";
 import { MockConnector } from "./mock";
 
@@ -17,7 +18,7 @@ let production: Record<PlatformKey, PlatformConnector> | null = null;
 function productionConnectors() {
   production ??= {
     YOUTUBE: new YouTubeConnector(),
-    INSTAGRAM: new InstagramConnector(),
+    INSTAGRAM: env().INSTAGRAM_PROVIDER === "ensembledata" ? new InstagramEnsembleConnector() : new InstagramConnector(),
     TIKTOK: new TikTokConnector(),
   };
   return production;

@@ -1,0 +1,6 @@
+{
+  "data": {
+    "user": { "id": "68123", "uniqueId": "mealzyapp", "nickname": "Mealzy", "avatarLarger": "https://p16/web.jpeg", "verified": true, "privateAccount": false },
+    "stats": { "followerCount": 9400, "followingCount": 3, "heartCount": 88000, "videoCount": 31 }
+  }
+}

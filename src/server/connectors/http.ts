@@ -70,4 +70,4 @@ export async function fetchJson(
 
 /** Redact secrets from URLs before they land in logs / error details. */
 export const redact = (url: string) =>
-  url.replace(/([?&](key|access_token|api_key)=)[^&]+/gi, "$1[redacted]");
+  url.replace(/([?&](key|access_token|api_key|token)=)[^&]+/gi, "$1[redacted]");

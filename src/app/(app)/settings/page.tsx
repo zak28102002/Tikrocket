@@ -179,7 +179,7 @@ export default function SettingsPage() {
               ))}
             </ul>
             <p className="mt-3 text-[12px] text-fg-3">
-              Configure with <code className="font-mono text-fg-2">YOUTUBE_API_KEY</code>, <code className="font-mono text-fg-2">META_ACCESS_TOKEN</code> + <code className="font-mono text-fg-2">META_IG_BUSINESS_ACCOUNT_ID</code>, and <code className="font-mono text-fg-2">TIKTOK_PROVIDER</code>. See the README.
+              YouTube: <code className="font-mono text-fg-2">YOUTUBE_API_KEY</code>. TikTok: <code className="font-mono text-fg-2">TIKTOK_PROVIDER=ensembledata</code> + <code className="font-mono text-fg-2">ENSEMBLEDATA_TOKEN</code>. Instagram: <code className="font-mono text-fg-2">META_ACCESS_TOKEN</code> + <code className="font-mono text-fg-2">META_IG_BUSINESS_ACCOUNT_ID</code>, or <code className="font-mono text-fg-2">INSTAGRAM_PROVIDER=ensembledata</code> for reel views. See the README.
             </p>
           </Section>
 

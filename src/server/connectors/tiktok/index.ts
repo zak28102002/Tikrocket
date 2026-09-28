@@ -3,10 +3,13 @@ import { ConnectorError } from "../errors";
 import type { AccountRef, NormalizedPostMetrics, PlatformConnector } from "../types";
 import type { TikTokDataProvider } from "./provider";
 import { HttpTikTokProvider } from "./providers/http";
+import { EnsembleDataTikTokProvider } from "./providers/ensembledata";
 
 function resolveProvider(): TikTokDataProvider | null {
   const e = env();
   switch (e.TIKTOK_PROVIDER) {
+    case "ensembledata":
+      return e.ENSEMBLEDATA_TOKEN ? new EnsembleDataTikTokProvider() : null;
     case "http":
       return e.TIKTOK_PROVIDER_BASE_URL && e.TIKTOK_PROVIDER_API_KEY
         ? new HttpTikTokProvider(e.TIKTOK_PROVIDER_BASE_URL, e.TIKTOK_PROVIDER_API_KEY)
