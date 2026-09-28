@@ -4,6 +4,14 @@
 
 Create an app → paste its public social profiles → Pulse collects the available metrics in the background, keeps an append-only history, and turns it into one calm, fast dashboard.
 
+![Overview](docs/screenshots/overview.png)
+
+| Content library | App page (dark) |
+|---|---|
+| ![Content](docs/screenshots/content.png) | ![App](docs/screenshots/app-dark.png) |
+
+<sub>Screenshots show the demo workspace (synthetic data).</sub>
+
 ---
 
 ## Quick start
