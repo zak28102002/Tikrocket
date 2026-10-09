@@ -1,0 +1,460 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "fw-hero",
+      "settings": {
+        "image": "shopify://shop_images/fw-hero-smile-miswak.png",
+        "image_alt": "Close-up of a healthy smile holding a natural miswak stick",
+        "eyebrow": "Natural oral care · Salvadora persica",
+        "heading": "The original natural toothbrush.",
+        "text": "Used for thousands of years, the miswak is a natural teeth-cleaning stick made from Salvadora persica. No nylon bristles. No toothpaste required. Just nature.",
+        "twist": "Now with a naturally flavored twist.",
+        "cta_label": "Discover miswak",
+        "cta2_label": "Shop flavors"
+      }
+    },
+    "history": {
+      "type": "fw-history",
+      "blocks": {
+        "t1": {
+          "type": "step",
+          "settings": {
+            "when": "7,000 years ago",
+            "title": "The first toothbrush",
+            "text": "Natural chewing sticks are among the oldest known oral-care tools."
+          }
+        },
+        "t2": {
+          "type": "step",
+          "settings": {
+            "when": "Ancient civilizations",
+            "title": "A daily ritual",
+            "text": "Used across the Middle East, Africa and Asia."
+          }
+        },
+        "t3": {
+          "type": "step",
+          "settings": {
+            "when": "Generations",
+            "title": "Passed down",
+            "text": "A tradition kept alive, family to family."
+          }
+        },
+        "t4": {
+          "type": "step",
+          "settings": {
+            "when": "Modern day",
+            "title": "Still in use",
+            "text": "Millions still reach for miswak today."
+          }
+        },
+        "t5": {
+          "type": "step",
+          "settings": {
+            "when": "Now",
+            "title": "Flavwak",
+            "text": "The same natural miswak, naturally flavored."
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/fw-heritage-miswak.png",
+        "image_alt": "Natural miswak sticks on ancient stone",
+        "eyebrow": "7,000 years before plastic",
+        "heading": "7,000 years of oral care.",
+        "text": "Long before plastic toothbrushes existed, people cleaned their teeth with natural chewing sticks. Miswak has been used for thousands of years and remains a traditional oral-care tool around the world.",
+        "stat": "Still used by millions around the world"
+      }
+    },
+    "what_is": {
+      "type": "fw-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Peel",
+            "text": "Remove the outer bark from the tip."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Chew",
+            "text": "Gently chew the end until the natural fibers separate."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Brush",
+            "text": "Use the fibers to brush your teeth and gums."
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "title": "Refresh",
+            "text": "Trim the used fibers and expose a fresh section."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "settings": {
+        "anchor": "what-is-miswak",
+        "bg": "bg-ivory",
+        "image": "shopify://shop_images/fw-miswak-fibers.png",
+        "image_alt": "Miswak tip with natural brush-like fibers",
+        "image_right": false,
+        "eyebrow": "What is a miswak?",
+        "heading": "So… what exactly is a miswak?",
+        "subheading": "A toothbrush that grows on a tree.",
+        "text": "A miswak is a natural teeth-cleaning stick made from Salvadora persica, also known as the toothbrush tree. Soften the end and its natural fibers form a brush, so you can clean your teeth without nylon bristles.",
+        "cta_label": ""
+      }
+    },
+    "plastic": {
+      "type": "fw-plastic",
+      "settings": {
+        "eyebrow": "The plastic problem",
+        "heading": "Your toothbrush doesn't disappear.",
+        "text": "Every year, your toothbrush gets replaced. The plastic doesn't.",
+        "bad_label": "Plastic toothbrush",
+        "bad_stat": "≈45g / year",
+        "bad_text": "Of toothbrush plastic discarded per person, per year. Roughly 9 credit cards' worth.",
+        "good_label": "Miswak",
+        "good_stat": "No plastic in the brush",
+        "good_text": "A natural wood alternative to plastic bristles.",
+        "image": "shopify://shop_images/fw-plastic-vs-miswak.png",
+        "image_alt": "Used plastic toothbrushes and plastic cards next to natural miswak sticks",
+        "footnote": "Refers to the miswak itself, not the packaging. Credit-card comparison based on ~5g per card."
+      }
+    },
+    "benefits": {
+      "type": "fw-benefits",
+      "blocks": {
+        "b1": {
+          "type": "card",
+          "settings": {
+            "title": "Natural fibers",
+            "text": "The bristles are formed from the plant itself."
+          }
+        },
+        "b2": {
+          "type": "card",
+          "settings": {
+            "title": "No nylon bristles",
+            "text": "The brush comes from natural wood fibers."
+          }
+        },
+        "b3": {
+          "type": "card",
+          "settings": {
+            "title": "No toothpaste required",
+            "text": "Miswak can be used on its own, without conventional toothpaste."
+          }
+        },
+        "b4": {
+          "type": "card",
+          "settings": {
+            "title": "Traditional oral care",
+            "text": "Used for thousands of years to keep teeth clean."
+          }
+        },
+        "b5": {
+          "type": "card",
+          "settings": {
+            "title": "Fresh, clean feel",
+            "text": "The fibers mechanically clean teeth and help remove plaque."
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ],
+      "settings": {
+        "anchor": "benefits",
+        "bg": "bg-white",
+        "eyebrow": "Why people use miswak",
+        "heading": "Nature built the brush.",
+        "text": "",
+        "note": "Miswak supports your oral hygiene routine. It is not a substitute for regular dental check-ups."
+      }
+    },
+    "why": {
+      "type": "fw-why",
+      "settings": {
+        "image": "shopify://shop_images/fw-flavors-campaign.png",
+        "image_alt": "Flavwak miswak with mint, vanilla, strawberry, mango and clove",
+        "eyebrow": "Nature's toothbrush. Your favorite flavor.",
+        "heading": "The miswak you'll actually want to use.",
+        "subheading": "Miswak has always been natural. We simply made the experience more enjoyable.",
+        "text": "Flavwak keeps the traditional natural miswak at its core and adds a naturally flavored experience, giving you a fresh, enjoyable reason to make miswak part of your daily routine.",
+        "cta_label": "Choose your flavor"
+      }
+    },
+    "flavors": {
+      "type": "fw-flavors",
+      "blocks": {
+        "f1": {
+          "type": "flavor",
+          "settings": {
+            "product": "mint-flavored-miswak",
+            "flavor": "Mint",
+            "description": "Cool and clean. The classic fresh start."
+          }
+        },
+        "f2": {
+          "type": "flavor",
+          "settings": {
+            "product": "vanilla-flavored-miswak",
+            "flavor": "Vanilla",
+            "description": "Soft, smooth and comforting."
+          }
+        },
+        "f3": {
+          "type": "flavor",
+          "settings": {
+            "product": "lemon-flavored-miswak",
+            "flavor": "Mango",
+            "description": "Bright, juicy and tropical."
+          }
+        },
+        "f4": {
+          "type": "flavor",
+          "settings": {
+            "product": "strawberry-flavored-miswak",
+            "flavor": "Clove",
+            "description": "Warm and spicy, with a traditional edge."
+          }
+        },
+        "f5": {
+          "type": "flavor",
+          "settings": {
+            "product": "cherry-flavored-miswak",
+            "flavor": "Strawberry",
+            "description": "Sweet and fruity, the easy first miswak."
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5"
+      ],
+      "settings": {
+        "eyebrow": "Same natural miswak",
+        "heading": "Choose your favorite miswak.",
+        "text": "Same natural miswak. Different ways to enjoy it.",
+        "note": "Each pack contains 3 natural miswak sticks. Save when you buy 2 or 3 packs."
+      }
+    },
+    "howto": {
+      "type": "fw-steps",
+      "blocks": {
+        "h1": {
+          "type": "step",
+          "settings": {
+            "title": "Peel the end",
+            "text": "Remove about 1 cm of bark."
+          }
+        },
+        "h2": {
+          "type": "step",
+          "settings": {
+            "title": "Chew",
+            "text": "Chew gently until the fibers feel brush-like."
+          }
+        },
+        "h3": {
+          "type": "step",
+          "settings": {
+            "title": "Brush",
+            "text": "Brush gently along your teeth and gums."
+          }
+        },
+        "h4": {
+          "type": "step",
+          "settings": {
+            "title": "Trim & repeat",
+            "text": "Trim the used fibers and start fresh."
+          }
+        }
+      },
+      "block_order": [
+        "h1",
+        "h2",
+        "h3",
+        "h4"
+      ],
+      "settings": {
+        "anchor": "how-it-works",
+        "bg": "bg-sand",
+        "image": "shopify://shop_images/fw-peel-miswak.png",
+        "image_alt": "Hands peeling the bark off a miswak tip",
+        "image_right": true,
+        "eyebrow": "How it works",
+        "heading": "Your new 2-minute routine.",
+        "subheading": "",
+        "text": "No learning curve. Four steps and you're done.",
+        "cta_label": "Get your miswak"
+      }
+    },
+    "faq": {
+      "type": "fw-faq",
+      "blocks": {
+        "q1": {
+          "type": "item",
+          "settings": {
+            "question": "What is a miswak?",
+            "answer": "<p>A miswak is a natural teeth-cleaning stick cut from the Salvadora persica tree, often called the toothbrush tree. Once the tip is softened, its fibers work like a brush.</p>"
+          }
+        },
+        "q2": {
+          "type": "item",
+          "settings": {
+            "question": "Is miswak a natural toothbrush?",
+            "answer": "<p>Yes. The brush is the wood itself: no nylon bristles and no plastic handle.</p>"
+          }
+        },
+        "q3": {
+          "type": "item",
+          "settings": {
+            "question": "How do I use a miswak?",
+            "answer": "<p>Peel about 1 cm of bark, chew the tip until the fibers separate, then brush gently along your teeth and gums. When the fibers wear out, trim them and expose a fresh section.</p>"
+          }
+        },
+        "q4": {
+          "type": "item",
+          "settings": {
+            "question": "Do I need toothpaste with miswak?",
+            "answer": "<p>No. Miswak is traditionally used on its own. Many people also keep using it alongside their usual routine.</p>"
+          }
+        },
+        "q5": {
+          "type": "item",
+          "settings": {
+            "question": "What is Flavwak?",
+            "answer": "<p>Flavwak is natural miswak with a flavored twist. The miswak does the cleaning; the flavor makes the experience more enjoyable.</p>"
+          }
+        },
+        "q6": {
+          "type": "item",
+          "settings": {
+            "question": "Are the flavors natural?",
+            "answer": "<p>Yes, our miswak are flavored with natural flavors.</p>"
+          }
+        },
+        "q7": {
+          "type": "item",
+          "settings": {
+            "question": "How long does one miswak last?",
+            "answer": "<p>It depends on how often you use it. Trim the used fibers regularly and keep using the stick until it gets too short to hold comfortably.</p>"
+          }
+        },
+        "q8": {
+          "type": "item",
+          "settings": {
+            "question": "How should I store my miswak?",
+            "answer": "<p>Keep it in a cool, dry place, ideally in a case or its pack, and let the tip air-dry between uses.</p>"
+          }
+        },
+        "q9": {
+          "type": "item",
+          "settings": {
+            "question": "How many miswaks come in a pack?",
+            "answer": "<p>Each pack contains 3 natural miswak sticks.</p>"
+          }
+        },
+        "q10": {
+          "type": "item",
+          "settings": {
+            "question": "Can I use miswak every day?",
+            "answer": "<p>Yes. Miswak is traditionally used every day, as often as you would brush. If you have a specific dental condition, ask your dentist.</p>"
+          }
+        },
+        "q11": {
+          "type": "item",
+          "settings": {
+            "question": "Is the miswak made from real Salvadora persica?",
+            "answer": "<p>Yes. Every Flavwak stick is genuine Salvadora persica wood.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8",
+        "q9",
+        "q10",
+        "q11"
+      ],
+      "settings": {
+        "eyebrow": "Good questions",
+        "heading": "Everything you need to know."
+      }
+    },
+    "final": {
+      "type": "fw-final-cta",
+      "settings": {
+        "image": "shopify://shop_images/fw-flavors-campaign.png",
+        "image_alt": "Flavwak flavored miswak with fresh ingredients",
+        "eyebrow": "Ancient miswak. Naturally flavored.",
+        "heading": "Meet the toothbrush that came first.",
+        "text": "7,000 years of tradition. Natural wood. A modern experience.",
+        "cta_label": "Choose your flavor",
+        "cta2_label": "Learn how it works"
+      }
+    },
+    "sticky": {
+      "type": "fw-sticky-cta",
+      "settings": {
+        "label": "Shop miswak"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "history",
+    "what_is",
+    "plastic",
+    "benefits",
+    "why",
+    "flavors",
+    "howto",
+    "faq",
+    "final",
+    "sticky"
+  ]
+}
