@@ -230,10 +230,11 @@
   function reducedSpinTo(target) {
     return new Promise(function (resolve) {
       var from = angle;
-      var dest = target === null ? from : from + 360 + ((target - from - 360) % 360 + 360) % 360;
+      // Reduced motion: no full turns, just a short ease onto the result.
+      var dest = target === null ? from : from + ((target - from) % 360 + 360) % 360;
       var start = performance.now();
       function frame(now) {
-        var p = Math.min((now - start) / 900, 1);
+        var p = Math.min((now - start) / 600, 1);
         setAngle(from + (dest - from) * (1 - Math.pow(1 - p, 3)));
         if (p < 1) requestAnimationFrame(frame); else resolve();
       }
@@ -406,6 +407,8 @@
   }
   function close() {
     if (dialog.open) { try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); } }
+    document.documentElement.classList.remove('fw-spin-open');
+    renderDock();
   }
   dialog.addEventListener('close', function () {
     document.documentElement.classList.remove('fw-spin-open');

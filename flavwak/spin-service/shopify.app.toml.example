@@ -1,0 +1,18 @@
+# App configuration for the Flavwak Spin to Win app (Shopify Dev Dashboard / Shopify CLI).
+# Copy to shopify.app.toml, fill in client_id and your service URL, then
+# `shopify app deploy` (or set the same values in the Dev Dashboard app version).
+client_id = "YOUR_CLIENT_ID"
+name = "Flavwak Spin to Win"
+application_url = "https://YOUR-SPIN-SERVICE.up.railway.app/health"
+embedded = false
+
+[access_scopes]
+# write/read_discounts create the codes; read_customers lets a code be limited to the
+# logged-in winner (SPIN_LOCK_CODE_TO_CUSTOMER).
+scopes = "write_discounts,read_discounts,read_customers"
+
+[app_proxy]
+# Storefront URL https://flavwak.com/apps/flavwak-spin/* → https://YOUR-SPIN-SERVICE/proxy/*
+url = "https://YOUR-SPIN-SERVICE.up.railway.app/proxy"
+prefix = "apps"
+subpath = "flavwak-spin"

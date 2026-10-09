@@ -57,12 +57,12 @@ html.fw-spin-open { overflow: hidden; }
 .fw-spin__seg--p35 { fill: var(--fw-spin-ink); }
 .fw-spin__seg--none { fill: var(--fw-spin-red); }
 .fw-spin__label { font-family: var(--font-heading-family, inherit); font-weight: 800; letter-spacing: .04em; fill: var(--fw-spin-ink); }
-.fw-spin__label-big { font-size: 34px; }
-.fw-spin__label-small { font-size: 17px; letter-spacing: .12em; }
-.fw-spin__label--none { font-size: 19px; letter-spacing: .14em; fill: #fff; }
+.fw-spin__label-big { font-size: 29px; }
+.fw-spin__label-small { font-size: 14px; letter-spacing: .1em; }
+.fw-spin__label--none { font-size: 15px; letter-spacing: .08em; fill: #fff; }
 .fw-spin__label--p10 { fill: #fbf7ef; }
 .fw-spin__label--p35 { fill: var(--fw-spin-gold); }
-.fw-spin__label--p35 .fw-spin__label-big { font-size: 38px; }
+.fw-spin__label--p35 .fw-spin__label-big { font-size: 33px; }
 
 /* Content */
 .fw-spin__content { text-align: center; }
