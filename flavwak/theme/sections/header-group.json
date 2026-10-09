@@ -36,6 +36,18 @@
         "enable_marquee": true
       }
     },
+    "spin-wheel": {
+      "type": "fw-spin-wheel",
+      "settings": {
+        "enabled": true,
+        "proxy_path": "/apps/flavwak-spin",
+        "auto_open": true,
+        "delay": 3,
+        "hide_on_cart": true,
+        "show_teaser": true,
+        "editor_preview": false
+      }
+    },
     "header": {
       "type": "header",
       "settings": {
@@ -61,6 +73,7 @@
   },
   "order": [
     "announcement-bar",
-    "header"
+    "header",
+    "spin-wheel"
   ]
 }

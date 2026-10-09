@@ -33,4 +33,17 @@
     hide.forEach(function (el) { hio.observe(el); });
     update();
   }
+
+  // Vertical videos: one plays at a time, and playback pauses once scrolled away
+  document.addEventListener('play', function (e) {
+    if (!e.target.matches || !e.target.matches('[data-fw-video]')) return;
+    document.querySelectorAll('[data-fw-video]').forEach(function (v) { if (v !== e.target && !v.paused) v.pause(); });
+  }, true);
+  var vids = document.querySelectorAll('[data-fw-video]');
+  if (vids.length && 'IntersectionObserver' in window) {
+    var vio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (!e.isIntersecting && !e.target.paused) e.target.pause(); });
+    }, { threshold: 0.2 });
+    vids.forEach(function (v) { vio.observe(v); });
+  }
 })();

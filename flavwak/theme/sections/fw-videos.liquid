@@ -1,0 +1,126 @@
+{{ 'flavwak.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'flavwak.js' | asset_url }}" defer></script>
+{%- liquid
+  assign anchor = section.settings.anchor | default: section.id
+  assign filled = 0
+  for block in section.blocks
+    if block.settings.video != blank
+      assign filled = filled | plus: 1
+    endif
+  endfor
+
+  comment
+    Customers never see empty slots. With no videos picked yet the section is
+    not rendered on the storefront (it still shows, with placeholders, in the
+    theme editor) unless "Show placeholders on the storefront" is turned on.
+  endcomment
+  assign show = true
+  if filled == 0 and request.design_mode == false and section.settings.show_placeholders_live == false
+    assign show = false
+  endif
+-%}
+
+{%- if show and section.blocks.size > 0 -%}
+  <section class="fw fw-{{ section.settings.bg }} fw-section fw-videos" id="{{ anchor }}" aria-labelledby="FwVideosHeading-{{ section.id }}">
+    <div class="fw-wrap">
+      <div class="fw-center fw-reveal">
+        {%- if section.settings.eyebrow != blank -%}<p class="fw-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h2 class="fw-h2" id="FwVideosHeading-{{ section.id }}">{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}<p class="fw-lead">{{ section.settings.text }}</p>{%- endif -%}
+      </div>
+
+      <ul class="fw-videos__track fw-reveal" role="list" data-fw-videos>
+        {%- for block in section.blocks -%}
+          <li class="fw-videos__item" {{ block.shopify_attributes }}>
+            <figure class="fw-videos__card">
+              <div class="fw-videos__frame">
+                {%- if block.settings.video != blank -%}
+                  {%- liquid
+                    assign poster = block.settings.poster | default: block.settings.video.preview_image
+                    assign label = block.settings.heading | default: block.settings.video.alt | default: section.settings.heading | escape
+                  -%}
+                  <video
+                    class="fw-videos__video"
+                    controls
+                    playsinline
+                    preload="none"
+                    {% if poster != blank %}poster="{{ poster | image_url: width: 720 }}"{% endif %}
+                    aria-label="{{ label }}"
+                    data-fw-video
+                  >
+                    {%- liquid
+                      assign mp4 = nil
+                      for source in block.settings.video.sources
+                        if source.format == 'm3u8'
+                          echo '<source src="' | append: source.url | append: '" type="' | append: source.mime_type | append: '">'
+                        elsif source.format == 'mp4' and source.height <= 1280
+                          if mp4 == nil or source.height > mp4.height
+                            assign mp4 = source
+                          endif
+                        endif
+                      endfor
+                    -%}
+                    {%- if mp4 -%}<source src="{{ mp4.url }}" type="{{ mp4.mime_type }}">{%- endif -%}
+                  </video>
+                {%- else -%}
+                  <div class="fw-videos__placeholder" role="img" aria-label="Video {{ forloop.index }} coming soon">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4V8Z" fill="currentColor" stroke="none"/></svg>
+                    <span class="fw-videos__placeholder-label">Video {{ forloop.index }}</span>
+                    <span class="fw-videos__placeholder-hint">9:16 vertical · add it in the theme editor</span>
+                  </div>
+                {%- endif -%}
+              </div>
+              {%- if block.settings.heading != blank or block.settings.caption != blank -%}
+                <figcaption class="fw-videos__caption">
+                  {%- if block.settings.heading != blank -%}<p class="fw-h3">{{ block.settings.heading }}</p>{%- endif -%}
+                  {%- if block.settings.caption != blank -%}<p class="fw-p">{{ block.settings.caption }}</p>{%- endif -%}
+                </figcaption>
+              {%- endif -%}
+            </figure>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "FW Vertical videos",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anchor id", "default": "videos" },
+    { "type": "select", "id": "bg", "label": "Background", "default": "bg-white", "options": [
+      { "value": "bg-ivory", "label": "Ivory" }, { "value": "bg-white", "label": "White" }, { "value": "bg-sand", "label": "Sand" }
+    ]},
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "See it in action" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Miswak, in real life." },
+    { "type": "textarea", "id": "text", "label": "Text" },
+    {
+      "type": "checkbox",
+      "id": "show_placeholders_live",
+      "label": "Show placeholders on the storefront",
+      "info": "Off: while no videos are picked, the section is only visible in the theme editor.",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        { "type": "video", "id": "video", "label": "Video (9:16 vertical)", "info": "Upload under Content → Files, or pick here. Shopify hosts and optimises it." },
+        { "type": "image_picker", "id": "poster", "label": "Cover image (optional)", "info": "Defaults to the video's own preview frame." },
+        { "type": "text", "id": "heading", "label": "Heading (optional)" },
+        { "type": "text", "id": "caption", "label": "Caption (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FW Vertical videos",
+      "blocks": [{ "type": "video" }, { "type": "video" }, { "type": "video" }]
+    }
+  ]
+}
+{% endschema %}

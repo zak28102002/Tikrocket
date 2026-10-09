@@ -1,0 +1,21 @@
+{
+  "name": "flavwak-spin-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Secure Spin-to-Win backend for the Flavwak Shopify store (Shopify App Proxy + real discount codes)",
+  "type": "module",
+  "engines": { "node": ">=22.18" },
+  "scripts": {
+    "start": "node src/main.ts",
+    "test": "node --test --test-concurrency=1 'test/*.test.ts'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/pg": "^8.23.1",
+    "typescript": "^5.9.3"
+  }
+}

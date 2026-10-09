@@ -1,0 +1,137 @@
+/* Flavwak — Spin to win (popup, wheel, dock). Uses the .fw tokens from flavwak.css. */
+.fw-spin {
+  --fw-spin-ink: #1c1b17;
+  --fw-spin-gold: #f4e143;
+  --fw-spin-red: #c8261c;
+  --fw-spin-red-2: #a91f17;
+  --fw-spin-ivory: #fbf7ef;
+  --fw-spin-green: #2f4a2c;
+  --fw-ivory: #f7f3ec; --fw-sand: #ebe2d3; --fw-ink: #1c1b17; --fw-muted: #6a655b; --fw-green: #2f4a2c; --fw-accent: #f4e143; --fw-line: #dcd3c3; --fw-radius: 18px;
+  border: 0; padding: 16px; margin: 0; max-width: none; max-height: none;
+  width: 100%; height: 100%; background: transparent; color: var(--fw-ink);
+  display: none; align-items: center; justify-content: center; overflow: auto;
+}
+.fw-spin[open] { display: flex; }
+.fw-spin::backdrop { background: rgba(28, 27, 23, .58); backdrop-filter: blur(3px); }
+html.fw-spin-open { overflow: hidden; }
+
+.fw-spin__panel {
+  position: relative; width: 100%; max-width: 880px; margin: auto;
+  background: var(--fw-ivory); border-radius: 26px; padding: 26px 22px 20px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+  display: grid; gap: 18px; align-items: center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fw-spin[open] .fw-spin__panel { animation: fw-spin-in .42s cubic-bezier(.2, .9, .25, 1.15) both; }
+  .fw-spin[open]::backdrop { animation: fw-spin-fade .3s ease both; }
+}
+@keyframes fw-spin-in { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes fw-spin-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.fw-spin__close {
+  position: absolute; top: 12px; right: 12px; z-index: 2; width: 40px; height: 40px; border-radius: 50%;
+  border: 0; background: #fff; color: var(--fw-ink); display: grid; place-items: center; cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .1); transition: transform .2s ease;
+}
+.fw-spin__close:hover { transform: rotate(90deg); }
+.fw-spin__close:focus-visible, .fw-spin__link:focus-visible, .fw-spin .fw-btn:focus-visible { outline: 2px solid var(--fw-green); outline-offset: 3px; }
+
+/* Wheel */
+.fw-spin__stage { display: grid; place-items: center; }
+.fw-spin__wheel-wrap { position: relative; width: min(78vw, 46vh, 400px); aspect-ratio: 1; }
+.fw-spin__wheel { width: 100%; height: 100%; border-radius: 50%; filter: drop-shadow(0 18px 28px rgba(28, 27, 23, .28)); }
+.fw-spin__svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.fw-spin__pointer {
+  position: absolute; top: -14px; left: 50%; width: 40px; height: 52px; margin-left: -20px; z-index: 1;
+  transform-origin: 50% 30%; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .3));
+}
+.fw-spin__pointer svg { display: block; width: 100%; height: 100%; }
+.fw-spin__rim { fill: var(--fw-spin-ink); }
+.fw-spin__peg { fill: var(--fw-spin-gold); }
+.fw-spin__hub { fill: var(--fw-spin-ink); stroke: var(--fw-spin-gold); stroke-width: 4; }
+.fw-spin__hub-dot { fill: var(--fw-spin-gold); }
+.fw-spin__seg { stroke: #fff; stroke-width: 2; stroke-linejoin: round; }
+.fw-spin__seg--p5 { fill: var(--fw-spin-ivory); }
+.fw-spin__seg--p10 { fill: var(--fw-spin-green); }
+.fw-spin__seg--p20 { fill: var(--fw-spin-gold); }
+.fw-spin__seg--p35 { fill: var(--fw-spin-ink); }
+.fw-spin__seg--none { fill: var(--fw-spin-red); }
+.fw-spin__label { font-family: var(--font-heading-family, inherit); font-weight: 800; letter-spacing: .04em; fill: var(--fw-spin-ink); }
+.fw-spin__label-big { font-size: 34px; }
+.fw-spin__label-small { font-size: 17px; letter-spacing: .12em; }
+.fw-spin__label--none { font-size: 19px; letter-spacing: .14em; fill: #fff; }
+.fw-spin__label--p10 { fill: #fbf7ef; }
+.fw-spin__label--p35 { fill: var(--fw-spin-gold); }
+.fw-spin__label--p35 .fw-spin__label-big { font-size: 38px; }
+
+/* Content */
+.fw-spin__content { text-align: center; }
+.fw-spin__title {
+  font-family: var(--font-heading-family); font-weight: 800; text-transform: uppercase; letter-spacing: -.01em;
+  line-height: 1; margin: 0 0 10px; font-size: clamp(30px, 6vw, 46px); outline: none;
+}
+.fw-spin__title--win { font-size: clamp(42px, 9vw, 68px); color: var(--fw-green); }
+.fw-spin__text { margin: 0 auto 16px; max-width: 380px; font-size: 16px; line-height: 1.5; color: var(--fw-muted); }
+.fw-spin__actions { display: grid; gap: 10px; max-width: 360px; margin: 0 auto; }
+.fw-spin__go { min-height: 58px; font-size: 15px; }
+.fw-spin__go[disabled] { opacity: .75; cursor: progress; transform: none; }
+.fw-spin__link {
+  background: none; border: 0; padding: 8px; margin: 2px auto 0; cursor: pointer; font: inherit; font-size: 14px;
+  color: var(--fw-muted); text-decoration: underline; text-underline-offset: 3px; display: block;
+}
+.fw-spin__msg { margin: 12px auto 0; max-width: 360px; font-size: 14px; color: #a32a1f; line-height: 1.45; }
+.fw-spin__terms { margin: 14px auto 0; max-width: 400px; font-size: 11.5px; line-height: 1.45; color: #8d8678; }
+
+.fw-spin__code {
+  margin: 4px auto 16px; max-width: 360px; border: 2px dashed var(--fw-green); border-radius: 16px; background: #fff;
+  padding: 12px 16px; display: grid; gap: 2px;
+}
+.fw-spin__code-label { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; font-weight: 700; color: var(--fw-muted); }
+.fw-spin__code-value { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: clamp(20px, 5vw, 26px); font-weight: 800; letter-spacing: .08em; user-select: all; word-break: break-all; }
+.fw-spin__status { min-height: 20px; margin: 10px auto 0; max-width: 360px; font-size: 14px; color: var(--fw-green); font-weight: 600; }
+.fw-spin__expiry { margin: 4px 0 6px; font-size: 13px; color: var(--fw-muted); }
+.fw-spin__result.is-in { animation: fw-spin-reveal .5s cubic-bezier(.2, .9, .3, 1.2) both; }
+@keyframes fw-spin-reveal { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: none; } }
+.fw-spin.is-win .fw-spin__code { animation: fw-spin-glow 1.6s ease .3s 2; }
+@keyframes fw-spin-glow { 50% { box-shadow: 0 0 0 6px rgba(244, 225, 67, .55); } }
+.fw-spin--nowheel .fw-spin__stage { display: none; }
+
+@media (min-width: 760px) {
+  .fw-spin__panel { grid-template-columns: 1.05fr 1fr; padding: 40px 44px 36px 36px; gap: 36px; }
+  .fw-spin__wheel-wrap { width: min(40vw, 72vh, 400px); }
+  .fw-spin__content { text-align: left; }
+  .fw-spin__text, .fw-spin__actions, .fw-spin__code, .fw-spin__msg, .fw-spin__status, .fw-spin__terms { margin-left: 0; }
+  .fw-spin__link { margin-left: 0; padding-left: 0; }
+  .fw-spin--nowheel .fw-spin__panel { grid-template-columns: 1fr; max-width: 480px; }
+}
+@media (max-width: 759px) {
+  .fw-spin { padding: 10px; }
+  .fw-spin__panel { padding: 30px 16px 16px; gap: 12px; }
+  .fw-spin__text { margin-bottom: 12px; }
+}
+@media (max-height: 640px) and (max-width: 759px) {
+  .fw-spin__wheel-wrap { width: min(70vw, 38vh); }
+  .fw-spin__title { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fw-spin__result.is-in, .fw-spin.is-win .fw-spin__code { animation: none; }
+  .fw-spin__close:hover { transform: none; }
+}
+
+/* Dock: teaser after dismissing, or the saved reward on every page */
+.fw-spin-dock { position: fixed; left: 16px; bottom: 16px; z-index: 39; display: grid; gap: 8px; }
+.fw-spin-dock[hidden] { display: none; }
+.fw-spin-chip {
+  display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 999px; border: 0; cursor: pointer;
+  background: var(--fw-ink, #1c1b17); color: #fbf7ef; font: inherit; font-size: 13px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; box-shadow: 0 10px 26px rgba(0, 0, 0, .22); transition: transform .2s ease;
+}
+.fw-spin-chip:hover { transform: translateY(-2px); }
+.fw-spin-chip:focus-visible { outline: 2px solid #f4e143; outline-offset: 3px; }
+.fw-spin-chip--reward { background: #2f4a2c; }
+.fw-spin-chip__pct { color: #f4e143; }
+.fw-spin-chip__code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; text-transform: none; }
+@media (max-width: 899px) {
+  /* Sits above the theme's sticky "Shop miswak" bar */
+  .fw-spin-dock { left: 12px; bottom: 82px; }
+}

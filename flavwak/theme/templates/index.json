@@ -326,6 +326,23 @@
         "cta_label": "Get your miswak"
       }
     },
+    "videos": {
+      "type": "fw-videos",
+      "blocks": {
+        "v1": { "type": "video", "settings": { "heading": "", "caption": "" } },
+        "v2": { "type": "video", "settings": { "heading": "", "caption": "" } },
+        "v3": { "type": "video", "settings": { "heading": "", "caption": "" } }
+      },
+      "block_order": ["v1", "v2", "v3"],
+      "settings": {
+        "anchor": "videos",
+        "bg": "bg-white",
+        "eyebrow": "See it in action",
+        "heading": "Miswak, in real life.",
+        "text": "",
+        "show_placeholders_live": false
+      }
+    },
     "faq": {
       "type": "fw-faq",
       "blocks": {
@@ -453,6 +470,7 @@
     "why",
     "flavors",
     "howto",
+    "videos",
     "faq",
     "final",
     "sticky"

@@ -1,0 +1,154 @@
+{%- comment -%}
+  Spin-to-Win popup. Outcomes and discount codes come from the Flavwak spin service
+  through the Shopify App Proxy (default path /apps/flavwak-spin); nothing about the
+  odds or the prize is decided in the browser. If the proxy is not configured or not
+  reachable, nothing is shown.
+{%- endcomment -%}
+{%- liquid
+  assign skip = false
+  if section.settings.enabled == false
+    assign skip = true
+  endif
+  if section.settings.hide_on_cart and request.page_type == 'cart'
+    assign skip = true
+  endif
+  if request.page_type == 'password' or request.page_type == 'gift_card'
+    assign skip = true
+  endif
+-%}
+
+{%- unless skip -%}
+  {{ 'flavwak.css' | asset_url | stylesheet_tag }}
+  {{ 'fw-spin.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'fw-spin.js' | asset_url }}" defer></script>
+
+  <script type="application/json" id="FwSpinConfig">
+    {
+      "proxy": {{ section.settings.proxy_path | default: '/apps/flavwak-spin' | json }},
+      "delayMs": {{ section.settings.delay | times: 1000 | json }},
+      "autoOpen": {{ section.settings.auto_open | json }},
+      "teaser": {{ section.settings.show_teaser | json }},
+      "designMode": {{ request.design_mode | json }},
+      "editorPreview": {{ section.settings.editor_preview | json }},
+      "cartUrl": {{ routes.cart_url | json }},
+      "cartUpdateUrl": {{ routes.cart_update_url | append: '.js' | json }},
+      "shopUrl": {{ section.settings.shop_link | default: '/#flavors' | json }},
+      "text": {
+        "winEyebrow": {{ section.settings.win_eyebrow | json }},
+        "loseHeading": {{ section.settings.lose_heading | json }},
+        "loseText": {{ section.settings.lose_text | json }},
+        "terms": {{ section.settings.terms | json }}
+      }
+    }
+  </script>
+
+  <dialog class="fw fw-spin" id="FwSpin" aria-labelledby="FwSpinTitle" aria-describedby="FwSpinText">
+    <div class="fw-spin__panel">
+      <button type="button" class="fw-spin__close" data-fw-spin-close aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+
+      <div class="fw-spin__stage">
+        <div class="fw-spin__wheel-wrap">
+          <div class="fw-spin__pointer" aria-hidden="true">
+            <svg viewBox="0 0 40 52" width="40" height="52"><path d="M20 50 4 18A16 16 0 1 1 36 18L20 50Z" fill="var(--fw-spin-ink)"/><circle cx="20" cy="17" r="7" fill="var(--fw-spin-gold)"/></svg>
+          </div>
+          <div class="fw-spin__wheel" data-fw-spin-wheel role="img" aria-label="Prize wheel"></div>
+        </div>
+      </div>
+
+      <div class="fw-spin__content">
+        <div class="fw-spin__intro" data-fw-spin-intro>
+          {%- if section.settings.eyebrow != blank -%}<p class="fw-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+          <h2 class="fw-spin__title" id="FwSpinTitle">{{ section.settings.heading }}</h2>
+          <p class="fw-spin__text" id="FwSpinText">{{ section.settings.text }}</p>
+          <div class="fw-spin__actions">
+            <button type="button" class="fw-btn fw-btn--solid fw-btn--block fw-spin__go" data-fw-spin-go autofocus>
+              <span data-fw-spin-go-label>{{ section.settings.spin_label }}</span>
+            </button>
+            <button type="button" class="fw-spin__link" data-fw-spin-close>{{ section.settings.dismiss_label }}</button>
+          </div>
+          <p class="fw-spin__msg" data-fw-spin-msg role="alert" hidden></p>
+        </div>
+
+        <div class="fw-spin__result" data-fw-spin-result hidden>
+          <div data-fw-spin-win hidden>
+            <p class="fw-eyebrow" data-fw-spin-win-eyebrow></p>
+            <h2 class="fw-spin__title fw-spin__title--win" tabindex="-1" data-fw-spin-result-title></h2>
+            <div class="fw-spin__code">
+              <span class="fw-spin__code-label">Your code</span>
+              <span class="fw-spin__code-value" data-fw-spin-code></span>
+            </div>
+            <div class="fw-spin__actions">
+              <button type="button" class="fw-btn fw-btn--solid fw-btn--block" data-fw-spin-apply>Apply discount</button>
+              <button type="button" class="fw-btn fw-btn--ghost fw-btn--block" data-fw-spin-copy>Copy code</button>
+            </div>
+            <p class="fw-spin__status" data-fw-spin-status role="status" aria-live="polite"></p>
+            <p class="fw-spin__expiry" data-fw-spin-expiry></p>
+            <button type="button" class="fw-spin__link" data-fw-spin-close>Continue shopping</button>
+          </div>
+          <div data-fw-spin-lose hidden>
+            <h2 class="fw-spin__title" tabindex="-1" data-fw-spin-lose-title></h2>
+            <p class="fw-spin__text" data-fw-spin-lose-text></p>
+            <div class="fw-spin__actions">
+              <a class="fw-btn fw-btn--solid fw-btn--block" data-fw-spin-shop href="{{ section.settings.shop_link | default: '/#flavors' }}">Continue shopping</a>
+            </div>
+          </div>
+        </div>
+
+        <p class="fw-spin__terms" data-fw-spin-terms></p>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="fw fw-spin-dock" data-fw-spin-dock hidden>
+    <button type="button" class="fw-spin-chip" data-fw-spin-teaser hidden>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-1.5-3-5-4-5-1.5S10 8 12 8Zm0 0c1.5-3 5-4 5-1.5S14 8 12 8Z"/></svg>
+      <span>{{ section.settings.teaser_label }}</span>
+    </button>
+    <button type="button" class="fw-spin-chip fw-spin-chip--reward" data-fw-spin-reward hidden>
+      <span class="fw-spin-chip__pct" data-fw-spin-reward-pct></span>
+      <span class="fw-spin-chip__code" data-fw-spin-reward-code></span>
+    </button>
+  </div>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "FW Spin to win",
+  "class": "fw-spin-section",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable Spin to win", "default": true },
+    {
+      "type": "paragraph",
+      "content": "Prizes, odds and discount codes are controlled by the Flavwak spin service (server side). The popup stays hidden until that service is connected through the App Proxy below."
+    },
+    { "type": "text", "id": "proxy_path", "label": "App Proxy path", "default": "/apps/flavwak-spin", "info": "Must match the subpath prefix + subpath configured for the app proxy." },
+    { "type": "checkbox", "id": "auto_open", "label": "Open automatically once per visit", "default": true },
+    { "type": "range", "id": "delay", "label": "Delay before opening", "min": 0, "max": 20, "step": 1, "unit": "s", "default": 3 },
+    { "type": "checkbox", "id": "hide_on_cart", "label": "Don't show on the cart page", "default": true },
+    { "type": "checkbox", "id": "show_teaser", "label": "After closing, show a small \"Spin to win\" button", "default": true },
+    { "type": "checkbox", "id": "editor_preview", "label": "Preview the popup in the theme editor", "info": "Spinning is disabled in the editor.", "default": false },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "A little welcome gift" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Spin to win" },
+    { "type": "text", "id": "text", "label": "Text", "default": "Spin for a special offer on your next order." },
+    { "type": "text", "id": "spin_label", "label": "Spin button", "default": "Spin the wheel" },
+    { "type": "text", "id": "dismiss_label", "label": "Dismiss link", "default": "No thanks, I'll keep shopping" },
+    { "type": "text", "id": "teaser_label", "label": "Teaser button", "default": "Spin to win" },
+    { "type": "text", "id": "win_eyebrow", "label": "Win eyebrow", "default": "You won" },
+    { "type": "text", "id": "lose_heading", "label": "No-prize heading", "default": "Not this time" },
+    { "type": "textarea", "id": "lose_text", "label": "No-prize text", "default": "This spin didn't land on a prize. Our multi-pack savings still apply when you buy 2 or 3 packs." },
+    {
+      "type": "textarea",
+      "id": "terms",
+      "label": "Terms line",
+      "info": "{hours} is replaced with the real code validity from the spin service.",
+      "default": "One spin per customer. Codes are single-use, valid for {hours} hours and can't be combined with other discounts, including multi-pack savings."
+    },
+    { "type": "url", "id": "shop_link", "label": "Continue-shopping link (default: /#flavors)" }
+  ],
+  "presets": [{ "name": "FW Spin to win" }]
+}
+{% endschema %}

@@ -2,6 +2,7 @@
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
 
 {%- if section.settings.enable_marquee -%}
+  {%- assign marquee_speed = section.settings.marquee_speed | default: 55 -%}
   {%- style -%}
     .announcement-bar.announcement-bar--marquee {
       justify-content: flex-start;
@@ -10,12 +11,22 @@
       min-height: 4.4rem;
     }
 
+    /*
+      Speed is constant in px/s regardless of message length: an inline script sets
+      --marquee-duration from the measured width of one group. The CSS fallback
+      (no JS) assumes ~600px per message at the default speed.
+    */
     .announcement-bar__marquee-track {
       display: flex;
       align-items: center;
       width: max-content;
       will-change: transform;
-      animation: announcement-marquee-{{ section.id }} 32s linear infinite;
+      animation: announcement-marquee-{{ section.id }} var(--marquee-duration, {{ 600 | times: 8 | divided_by: marquee_speed }}s) linear infinite;
+    }
+
+    .announcement-bar--marquee:hover .announcement-bar__marquee-track,
+    .announcement-bar--marquee:focus-within .announcement-bar__marquee-track {
+      animation-play-state: paused;
     }
 
     .announcement-bar__marquee-group {
@@ -44,10 +55,10 @@
 
     @keyframes announcement-marquee-{{ section.id }} {
       from {
-        transform: translateX(-50%);
+        transform: translateX(0%);
       }
       to {
-        transform: translateX(0%);
+        transform: translateX(-50%);
       }
     }
 
@@ -106,16 +117,31 @@
           {%- if section.settings.enable_marquee -%}
             <div class="announcement-bar__marquee-track" aria-hidden="true">
               <div class="announcement-bar__marquee-group">
-                {%- for i in (1..16) -%}
+                {%- for i in (1..8) -%}
                   <span class="announcement-bar__marquee-item h5">{{ section.blocks.first.settings.text | escape }}</span>
                 {%- endfor -%}
               </div>
               <div class="announcement-bar__marquee-group">
-                {%- for i in (1..16) -%}
+                {%- for i in (1..8) -%}
                   <span class="announcement-bar__marquee-item h5">{{ section.blocks.first.settings.text | escape }}</span>
                 {%- endfor -%}
               </div>
             </div>
+            <script>
+              (function () {
+                var track = document.currentScript.previousElementSibling;
+                var group = track && track.firstElementChild;
+                if (!group) return;
+                var speed = {{ marquee_speed | json }};
+                var set = function () {
+                  var w = group.getBoundingClientRect().width;
+                  if (w > 0) track.style.setProperty('--marquee-duration', (w / speed).toFixed(2) + 's');
+                };
+                set();
+                if (document.fonts && document.fonts.ready) document.fonts.ready.then(set);
+                window.addEventListener('resize', set, { passive: true });
+              })();
+            </script>
             <p class="announcement-bar__static-fallback h5" aria-hidden="true">
               <span>{{ section.blocks.first.settings.text | escape }}</span>
             </p>
@@ -274,6 +300,17 @@
       "label": "Enable scrolling marquee",
       "info": "Continuously scrolls the announcement text in a smooth infinite loop. Only applies when there is a single announcement.",
       "default": false
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "Marquee speed (pixels per second)",
+      "info": "Lower is slower. 55 lets a message cross a laptop screen in about 25–30 seconds.",
+      "default": 55
     },
     {
       "type": "range",

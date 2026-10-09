@@ -123,19 +123,98 @@
     transform: translateY(-1px);
   }
 
-  @media screen and (min-width: 990px) {
-    .header__bundle-cta {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
+  .header__fw-center {
+    display: none;
+  }
+
+  .header__fw-right {
+    display: contents;
+  }
+
+  {%- if section.settings.desktop_center_shop_button and section.settings.show_bundle_builder_button -%}
+    /*
+      Desktop only: logo | Shop button (true centre) | info links + icons.
+      Equal 1fr side tracks keep the button on the real centre line whatever the
+      widths of the logo and the right-hand group. Below 990px the extra wrappers
+      are display: none / contents, so the mobile and tablet header is unchanged.
+    */
+    @media screen and (min-width: 990px) {
+      .header.header--fw-split {
+        grid-template-areas: 'heading center right';
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        column-gap: 2.4rem;
+        max-width: max(var(--page-width), 120rem);
+      }
+
+      .header--fw-split .header__fw-center {
+        display: block;
+        grid-area: center;
+        justify-self: center;
+      }
+
+      .header--fw-split .header__fw-center .header__bundle-cta {
+        margin-right: 0;
+      }
+
+      .header--fw-split .header__icons .header__bundle-cta {
+        display: none;
+      }
+
+      .header--fw-split .header__fw-right {
+        display: flex;
+        grid-area: right;
+        align-items: center;
+        justify-content: flex-end;
+        justify-self: stretch;
+        gap: 0.8rem;
+        min-width: 0;
+      }
+
+      .header--fw-split .header__inline-menu {
+        margin-left: 0;
+        min-width: 0;
+      }
+
+      .header--fw-split .header__inline-menu > .list-menu--inline {
+        justify-content: flex-end;
+      }
+
+      .header--fw-split .header__icons {
+        flex: none;
+      }
     }
 
-    .header__bundle-cta:hover {
-      transform: translate(-50%, -50%) translateY(-1px);
+    @media screen and (min-width: 990px) and (max-width: 1199px) {
+      .header.header--fw-split.page-width {
+        column-gap: 1.6rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+      }
+
+      .header--fw-split .header__fw-right {
+        gap: 0.4rem;
+      }
+
+      .header--fw-split .header__inline-menu .header__menu-item {
+        padding-left: 0.7rem;
+        padding-right: 0.7rem;
+      }
     }
-  }
+  {%- else -%}
+    @media screen and (min-width: 990px) {
+      .header__bundle-cta {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+      }
+
+      .header__bundle-cta:hover {
+        transform: translate(-50%, -50%) translateY(-1px);
+      }
+    }
+  {%- endif -%}
 
   @media screen and (max-width: 749px) {
     .header__bundle-cta {
@@ -182,7 +261,7 @@
       assign localization_forms = true
     endif
   -%}
-  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}">
+  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}{% if section.settings.desktop_center_shop_button and section.settings.show_bundle_builder_button %} header--fw-split{% endif %}">
     {%- liquid
       if section.settings.menu != blank
         render 'header-drawer'
@@ -227,9 +306,29 @@
     {%- endif -%}
 
     {%- liquid
+      assign fw_split = false
+      if section.settings.desktop_center_shop_button and section.settings.show_bundle_builder_button
+        assign fw_split = true
+      endif
+    -%}
+
+    {%- if fw_split -%}
+      <div class="header__fw-center">
+        <a href="{{ section.settings.bundle_builder_url }}" class="header__bundle-cta link">
+          {{ section.settings.bundle_builder_button_label }}
+        </a>
+      </div>
+      <div class="header__fw-right">
+    {%- endif -%}
+
+    {%- liquid
       if section.settings.menu != blank
         if section.settings.menu_type_desktop == 'dropdown'
-          render 'header-dropdown-menu'
+          if fw_split and section.settings.desktop_hide_duplicate_shop_link
+            render 'header-dropdown-menu', skip_url: section.settings.bundle_builder_url
+          else
+            render 'header-dropdown-menu'
+          endif
         elsif section.settings.menu_type_desktop != 'drawer'
           render 'header-mega-menu'
         endif
@@ -338,6 +437,9 @@
         {%- endif -%}
       </a>
     </div>
+    {%- if fw_split -%}
+      </div>
+    {%- endif -%}
   </header>
 </{{ header_tag }}>
 
@@ -667,6 +769,20 @@
       "id": "bundle_builder_url",
       "label": "Button link",
       "default": "/pages/bundle-builder#bundle-builder-section"
+    },
+    {
+      "type": "checkbox",
+      "id": "desktop_center_shop_button",
+      "label": "Desktop: centre the button and align menu links to the right",
+      "info": "Desktop (990px and wider) only. Mobile and tablet layouts are not affected.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "desktop_hide_duplicate_shop_link",
+      "label": "Desktop: hide menu links that point to the same URL as the button",
+      "info": "Avoids a second \"Shop\" link next to the centred button. The mobile menu still shows every link.",
+      "default": true
     },
     {
       "type": "header",
