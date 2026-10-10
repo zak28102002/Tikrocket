@@ -329,17 +329,45 @@
     "videos": {
       "type": "fw-videos",
       "blocks": {
-        "v1": { "type": "video", "settings": { "heading": "", "caption": "" } },
-        "v2": { "type": "video", "settings": { "heading": "", "caption": "" } },
-        "v3": { "type": "video", "settings": { "heading": "", "caption": "" } }
+        "v1": {
+          "type": "video",
+          "settings": {
+            "asset": "fw-ugc-1.mp4",
+            "poster_asset": "fw-ugc-1-poster.jpg",
+            "heading": "",
+            "caption": ""
+          }
+        },
+        "v2": {
+          "type": "video",
+          "settings": {
+            "heading": "",
+            "caption": ""
+          }
+        },
+        "v3": {
+          "type": "video",
+          "settings": {
+            "heading": "",
+            "caption": ""
+          }
+        }
       },
-      "block_order": ["v1", "v2", "v3"],
+      "block_order": [
+        "v1",
+        "v2",
+        "v3"
+      ],
       "settings": {
         "anchor": "videos",
         "bg": "bg-white",
         "eyebrow": "See it in action",
         "heading": "Miswak, in real life.",
-        "text": "",
+        "text": "No learning curve: peel the tip, chew until the fibers soften, and brush.",
+        "cta_label": "Choose your flavor",
+        "cta_link": "",
+        "cta_note": "Free shipping from £40 · Save when you buy 2 or 3 packs",
+        "autoplay": true,
         "show_placeholders_live": false
       }
     },
@@ -468,9 +496,9 @@
     "plastic",
     "benefits",
     "why",
+    "videos",
     "flavors",
     "howto",
-    "videos",
     "faq",
     "final",
     "sticky"

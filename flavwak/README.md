@@ -19,17 +19,29 @@ Spin to Win.
 | Videos | `sections/fw-videos.liquid`, `assets/flavwak.css`, `assets/flavwak.js`, `templates/index.json` | New **FW Vertical videos** section on the homepage between *How it works* and the FAQ: three 9:16 slots, 3 columns on desktop, swipeable on mobile. |
 | Spin to Win | `sections/fw-spin-wheel.liquid`, `assets/fw-spin.js`, `assets/fw-spin.css`, `sections/header-group.json`, `spin-service/` | Popup wheel on every page (header group), driven entirely by the spin service. |
 
-## Adding the three videos
+## Videos
 
-1. Shopify admin → **Online Store → Themes → Flavwak Redesign (draft) → Customize**.
-2. Homepage → **FW Vertical videos** → each **Video** block → *Video (9:16 vertical)* →
-   upload or pick the file (Shopify hosts and transcodes it). Optionally add a cover
-   image, heading and caption.
-3. Save. Until at least one video is picked, the section only shows in the editor
-   (with placeholders), never to customers.
+The first clip (`assets/fw-ugc-1.mp4`, 13 s, 9:16, with cover `fw-ugc-1-poster.jpg`) is
+live in **FW Vertical videos** in two places:
 
-Videos load nothing until pressed (`preload="none"`), never autoplay sound, play
-inline on phones, and only one plays at a time.
+- homepage, directly above the flavour picker (button: "Choose your flavor");
+- every product page, directly under the buy box (button: "Choose your pack", scrolls
+  back to the buy box).
+
+Behaviour: plays muted on a loop while on screen, pauses off screen, tap = sound on
+(restarts from the beginning, only one video with sound at a time), tap again = sound
+off, small pause button bottom-left. Clips without an audio track hide the sound badge
+and tap pauses/plays instead. Visitors with reduced motion get a play button instead
+of autoplay. Nothing downloads until the section is on screen.
+
+With one video the section shows a single featured video beside the text; with two or
+three it switches to a grid (desktop) / swipe carousel (mobile). Empty slots never show
+to customers.
+
+**Adding videos 2 and 3:** theme editor → homepage (and the product template) →
+**FW Vertical videos** → *Video 2* / *Video 3* → pick a file under *Video (9:16
+vertical)* (uploads to Shopify Files and is transcoded by Shopify). The theme-asset
+field is only an alternative for files uploaded with the theme.
 
 ## Spin to Win — what is still needed to go live
 

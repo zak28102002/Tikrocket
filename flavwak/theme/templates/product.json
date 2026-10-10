@@ -277,10 +277,56 @@
       "settings": {
         "label": "Choose your pack"
       }
+    },
+    "videos": {
+      "type": "fw-videos",
+      "blocks": {
+        "v1": {
+          "type": "video",
+          "settings": {
+            "asset": "fw-ugc-1.mp4",
+            "poster_asset": "fw-ugc-1-poster.jpg",
+            "heading": "",
+            "caption": ""
+          }
+        },
+        "v2": {
+          "type": "video",
+          "settings": {
+            "heading": "",
+            "caption": ""
+          }
+        },
+        "v3": {
+          "type": "video",
+          "settings": {
+            "heading": "",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3"
+      ],
+      "settings": {
+        "anchor": "videos",
+        "bg": "bg-ivory",
+        "eyebrow": "See it in action",
+        "heading": "Fresh, the natural way.",
+        "text": "Peel the tip, chew until the fibers soften, and brush. Each pack holds 3 natural miswak sticks.",
+        "cta_label": "Choose your pack",
+        "cta_link": "",
+        "cta_note": "Multi-pack savings apply automatically at checkout.",
+        "autoplay": true,
+        "show_placeholders_live": false
+      }
     }
   },
   "order": [
     "main",
+    "videos",
     "what_is",
     "howto",
     "why",

@@ -34,16 +34,66 @@
     update();
   }
 
-  // Vertical videos: one plays at a time, and playback pauses once scrolled away
-  document.addEventListener('play', function (e) {
-    if (!e.target.matches || !e.target.matches('[data-fw-video]')) return;
-    document.querySelectorAll('[data-fw-video]').forEach(function (v) { if (v !== e.target && !v.paused) v.pause(); });
-  }, true);
-  var vids = document.querySelectorAll('[data-fw-video]');
+  // Vertical videos: muted loop while on screen, tap for sound (one video with sound at a time).
+  var frames = [].slice.call(document.querySelectorAll('.fw-videos__frame'));
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var vidState = function (frame) {
+    var v = frame.querySelector('[data-fw-video]');
+    var snd = frame.querySelector('[data-fw-video-sound]');
+    var pause = frame.querySelector('[data-fw-video-pause]');
+    frame.classList.toggle('is-unmuted', !v.muted);
+    frame.classList.toggle('is-paused', v.paused);
+    snd.setAttribute('aria-pressed', String(!v.muted));
+    snd.setAttribute('aria-label', frame.classList.contains('no-audio') ? (v.paused ? 'Play video' : 'Pause video') : (v.muted ? 'Turn sound on' : 'Turn sound off'));
+    pause.setAttribute('aria-label', v.paused ? 'Play video' : 'Pause video');
+  };
+  var play = function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+  // Hide the sound control for clips that have no audio track.
+  var checkAudio = function (frame, v) {
+    var known = typeof v.mozHasAudio === 'boolean' || typeof v.webkitAudioDecodedByteCount === 'number' || (v.audioTracks && typeof v.audioTracks.length === 'number');
+    if (!known) return;
+    var has = v.mozHasAudio || v.webkitAudioDecodedByteCount > 0 || (v.audioTracks && v.audioTracks.length > 0);
+    frame.classList.toggle('no-audio', !has);
+    vidState(frame);
+  };
+  frames.forEach(function (frame) {
+    var v = frame.querySelector('[data-fw-video]');
+    if (!v) return;
+    var section = frame.closest('[data-fw-videos-autoplay]');
+    var auto = !reduce && (!section || section.getAttribute('data-fw-videos-autoplay') !== 'false');
+    v.muted = true;
+    v.__fwAuto = auto;
+    ['play', 'pause', 'volumechange'].forEach(function (ev) { v.addEventListener(ev, function () { vidState(frame); }); });
+    v.addEventListener('playing', function () { setTimeout(function () { checkAudio(frame, v); }, 900); }, { once: true });
+    frame.querySelector('[data-fw-video-sound]').addEventListener('click', function () {
+      if (frame.classList.contains('no-audio')) { if (v.paused) play(v); else v.pause(); return; }
+      if (v.muted) {
+        frames.forEach(function (f) { var o = f.querySelector('[data-fw-video]'); if (o && o !== v) o.muted = true; });
+        if (!v.__fwHeard) { v.__fwHeard = true; try { v.currentTime = 0; } catch (e) {} }
+        v.muted = false;
+        play(v);
+      } else {
+        v.muted = true;
+      }
+    });
+    frame.querySelector('[data-fw-video-pause]').addEventListener('click', function () {
+      if (v.paused) { v.__fwUserPaused = false; play(v); } else { v.__fwUserPaused = true; v.pause(); }
+    });
+    vidState(frame);
+  });
+  var vids = frames.map(function (f) { return f.querySelector('[data-fw-video]'); }).filter(Boolean);
   if (vids.length && 'IntersectionObserver' in window) {
     var vio = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (!e.isIntersecting && !e.target.paused) e.target.pause(); });
-    }, { threshold: 0.2 });
+      entries.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) {
+          if (v.__fwAuto && !v.__fwUserPaused) play(v);
+        } else if (!v.paused) {
+          v.pause();
+          v.muted = true;
+        }
+      });
+    }, { threshold: 0.35 });
     vids.forEach(function (v) { vio.observe(v); });
   }
 })();
