@@ -16,13 +16,19 @@ Spin to Win.
 | Announcement banner | `sections/announcement-bar.liquid` | Marquee runs at a constant **55 px/s** (was ~240 px/s): ~30–35 s for a message to cross a laptop screen, same speed on phones. Scrolls right-to-left, pauses on hover/focus, seamless loop, static text with reduced motion. New setting *Marquee speed*. |
 | Single / Duo | `config/settings_data.json` | The duplicate selector came from the **Section Store** app's bundle embed. It is now disabled in this theme; the theme's own 1 / 2 / 3-pack buy box (`fw-product`) and the automatic multi-pack discounts are untouched. |
 | Desktop header | `sections/header.liquid`, `snippets/header-dropdown-menu.liquid` | ≥ 990 px: logo left · **Shop miswak** on the true centre (CSS grid with equal side tracks) · How it works / Our story / FAQ + search, account, cart on the right. The menu's own "Shop" link (same URL as the button) is hidden on desktop only. Two new header settings switch either behaviour off. Mobile and tablet render exactly as before. |
-| Videos | `sections/fw-videos.liquid`, `assets/flavwak.css`, `assets/flavwak.js`, `templates/index.json` | New **FW Vertical videos** section on the homepage between *How it works* and the FAQ: three 9:16 slots, 3 columns on desktop, swipeable on mobile. |
+| Videos | `sections/fw-videos.liquid`, `assets/flavwak.css`, `assets/flavwak.js`, `assets/fw-ugc-*`, `templates/index.json`, `templates/product*.json` | **FW Vertical videos**: three UGC clips, muted autoplay loop, tap for sound; above the flavour picker on the homepage and under the buy box on every product page. |
 | Spin to Win | `sections/fw-spin-wheel.liquid`, `assets/fw-spin.js`, `assets/fw-spin.css`, `sections/header-group.json`, `spin-service/` | Popup wheel on every page (header group), driven entirely by the spin service. |
 
 ## Videos
 
-The first clip (`assets/fw-ugc-1.mp4`, 13 s, 9:16, with cover `fw-ugc-1-poster.jpg`) is
-live in **FW Vertical videos** in two places:
+Three UGC clips are live in **FW Vertical videos** (theme assets, H.264/AAC, faststart,
+each with a cover image):
+
+1. `fw-ugc-1.mp4` (44 s, sound) — plastic toothbrush vs miswak, strongest hook, shown first;
+2. `fw-ugc-2.mp4` (37 s, sound) — Flavwak packs review;
+3. `fw-ugc-3.mp4` (13 s, no audio track) — chewing close-up.
+
+Placed in two spots for conversion:
 
 - homepage, directly above the flavour picker (button: "Choose your flavor");
 - every product page, directly under the buy box (button: "Choose your pack", scrolls
@@ -38,10 +44,9 @@ With one video the section shows a single featured video beside the text; with t
 three it switches to a grid (desktop) / swipe carousel (mobile). Empty slots never show
 to customers.
 
-**Adding videos 2 and 3:** theme editor → homepage (and the product template) →
-**FW Vertical videos** → *Video 2* / *Video 3* → pick a file under *Video (9:16
-vertical)* (uploads to Shopify Files and is transcoded by Shopify). The theme-asset
-field is only an alternative for files uploaded with the theme.
+**Replacing or adding clips:** theme editor → homepage / product template → **FW
+Vertical videos** → a *Video* block → pick a file under *Video (9:16 vertical)*
+(Shopify Files, transcoded by Shopify). That overrides the theme-asset file name.
 
 ## Spin to Win — what is still needed to go live
 

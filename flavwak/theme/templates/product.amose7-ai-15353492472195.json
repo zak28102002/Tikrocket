@@ -293,6 +293,8 @@
         "v2": {
           "type": "video",
           "settings": {
+            "asset": "fw-ugc-2.mp4",
+            "poster_asset": "fw-ugc-2-poster.jpg",
             "heading": "",
             "caption": ""
           }
@@ -300,6 +302,8 @@
         "v3": {
           "type": "video",
           "settings": {
+            "asset": "fw-ugc-3.mp4",
+            "poster_asset": "fw-ugc-3-poster.jpg",
             "heading": "",
             "caption": ""
           }
