@@ -1,0 +1,291 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "fw-product",
+      "settings": {
+        "flavor_products": [
+          "mint-flavored-miswak",
+          "vanilla-flavored-miswak",
+          "lemon-flavored-miswak",
+          "strawberry-flavored-miswak",
+          "cherry-flavored-miswak"
+        ],
+        "sticks_per_pack": 3,
+        "save_2": 180,
+        "save_3": 470,
+        "show_description": false
+      }
+    },
+    "what_is": {
+      "type": "fw-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Peel",
+            "text": "Remove the outer bark from the tip."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Chew",
+            "text": "Gently chew the end until the natural fibers separate."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Brush",
+            "text": "Use the fibers to brush your teeth and gums."
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "title": "Refresh",
+            "text": "Trim the used fibers and expose a fresh section."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "settings": {
+        "anchor": "what-is-miswak",
+        "bg": "bg-ivory",
+        "image": "shopify://shop_images/fw-miswak-fibers.png",
+        "image_alt": "Miswak tip with natural brush-like fibers",
+        "image_right": false,
+        "eyebrow": "What is a miswak?",
+        "heading": "So… what exactly is a miswak?",
+        "subheading": "A toothbrush that grows on a tree.",
+        "text": "A miswak is a natural teeth-cleaning stick made from Salvadora persica, also known as the toothbrush tree. Soften the end and its natural fibers form a brush, so you can clean your teeth without nylon bristles.",
+        "cta_label": ""
+      }
+    },
+    "howto": {
+      "type": "fw-steps",
+      "blocks": {
+        "h1": {
+          "type": "step",
+          "settings": {
+            "title": "Peel the end",
+            "text": "Remove about 1 cm of bark."
+          }
+        },
+        "h2": {
+          "type": "step",
+          "settings": {
+            "title": "Chew",
+            "text": "Chew gently until the fibers feel brush-like."
+          }
+        },
+        "h3": {
+          "type": "step",
+          "settings": {
+            "title": "Brush",
+            "text": "Brush gently along your teeth and gums."
+          }
+        },
+        "h4": {
+          "type": "step",
+          "settings": {
+            "title": "Trim & repeat",
+            "text": "Trim the used fibers and start fresh."
+          }
+        }
+      },
+      "block_order": [
+        "h1",
+        "h2",
+        "h3",
+        "h4"
+      ],
+      "settings": {
+        "anchor": "how-it-works",
+        "bg": "bg-white",
+        "image": "shopify://shop_images/fw-peel-miswak.png",
+        "image_alt": "Hands peeling the bark off a miswak tip",
+        "image_right": true,
+        "eyebrow": "How it works",
+        "heading": "Your new 2-minute routine.",
+        "subheading": "",
+        "text": "No learning curve. Four steps and you're done.",
+        "cta_label": ""
+      }
+    },
+    "why": {
+      "type": "fw-why",
+      "settings": {
+        "image": "shopify://shop_images/fw-flavors-campaign.png",
+        "image_alt": "Flavwak miswak with mint, vanilla, strawberry, mango and clove",
+        "eyebrow": "Nature's toothbrush. Your favorite flavor.",
+        "heading": "The miswak you'll actually want to use.",
+        "subheading": "Miswak has always been natural. We simply made the experience more enjoyable.",
+        "text": "Flavwak keeps the traditional natural miswak at its core and adds a naturally flavored experience, giving you a fresh, enjoyable reason to make miswak part of your daily routine.",
+        "cta_label": "Choose your pack"
+      }
+    },
+    "faq": {
+      "type": "fw-faq",
+      "blocks": {
+        "q9": {
+          "type": "item",
+          "settings": {
+            "question": "How many miswaks come in a pack?",
+            "answer": "<p>Each pack contains 3 natural miswak sticks.</p>"
+          }
+        },
+        "q3": {
+          "type": "item",
+          "settings": {
+            "question": "How do I use a miswak?",
+            "answer": "<p>Peel about 1 cm of bark, chew the tip until the fibers separate, then brush gently along your teeth and gums. When the fibers wear out, trim them and expose a fresh section.</p>"
+          }
+        },
+        "q4": {
+          "type": "item",
+          "settings": {
+            "question": "Do I need toothpaste with miswak?",
+            "answer": "<p>No. Miswak is traditionally used on its own. Many people also keep using it alongside their usual routine.</p>"
+          }
+        },
+        "q6": {
+          "type": "item",
+          "settings": {
+            "question": "Are the flavors natural?",
+            "answer": "<p>Yes, our miswak are flavored with natural flavors.</p>"
+          }
+        },
+        "q7": {
+          "type": "item",
+          "settings": {
+            "question": "How long does one miswak last?",
+            "answer": "<p>It depends on how often you use it. Trim the used fibers regularly and keep using the stick until it gets too short to hold comfortably.</p>"
+          }
+        },
+        "q8": {
+          "type": "item",
+          "settings": {
+            "question": "How should I store my miswak?",
+            "answer": "<p>Keep it in a cool, dry place, ideally in a case or its pack, and let the tip air-dry between uses.</p>"
+          }
+        },
+        "q10": {
+          "type": "item",
+          "settings": {
+            "question": "Can I use miswak every day?",
+            "answer": "<p>Yes. Miswak is traditionally used every day, as often as you would brush. If you have a specific dental condition, ask your dentist.</p>"
+          }
+        },
+        "q11": {
+          "type": "item",
+          "settings": {
+            "question": "Is the miswak made from real Salvadora persica?",
+            "answer": "<p>Yes. Every Flavwak stick is genuine Salvadora persica wood.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q9",
+        "q3",
+        "q4",
+        "q6",
+        "q7",
+        "q8",
+        "q10",
+        "q11"
+      ],
+      "settings": {
+        "eyebrow": "Good questions",
+        "heading": "Everything you need to know."
+      }
+    },
+    "flavors": {
+      "type": "fw-flavors",
+      "blocks": {
+        "f1": {
+          "type": "flavor",
+          "settings": {
+            "product": "mint-flavored-miswak",
+            "flavor": "Mint",
+            "description": "Cool and clean. The classic fresh start."
+          }
+        },
+        "f2": {
+          "type": "flavor",
+          "settings": {
+            "product": "vanilla-flavored-miswak",
+            "flavor": "Vanilla",
+            "description": "Soft, smooth and comforting."
+          }
+        },
+        "f3": {
+          "type": "flavor",
+          "settings": {
+            "product": "lemon-flavored-miswak",
+            "flavor": "Mango",
+            "description": "Bright, juicy and tropical."
+          }
+        },
+        "f4": {
+          "type": "flavor",
+          "settings": {
+            "product": "strawberry-flavored-miswak",
+            "flavor": "Clove",
+            "description": "Warm and spicy, with a traditional edge."
+          }
+        },
+        "f5": {
+          "type": "flavor",
+          "settings": {
+            "product": "cherry-flavored-miswak",
+            "flavor": "Strawberry",
+            "description": "Sweet and fruity, the easy first miswak."
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5"
+      ],
+      "settings": {
+        "eyebrow": "Mix and match",
+        "heading": "Try another flavor.",
+        "text": "Same natural miswak. Different ways to enjoy it.",
+        "note": "Multi-pack savings also apply when you mix flavors."
+      }
+    },
+    "sticky": {
+      "type": "fw-sticky-cta",
+      "settings": {
+        "label": "Choose your pack"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "what_is",
+    "howto",
+    "why",
+    "faq",
+    "flavors",
+    "sticky"
+  ]
+}
