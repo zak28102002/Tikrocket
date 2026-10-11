@@ -48,20 +48,24 @@ to customers.
 Vertical videos** → a *Video* block → pick a file under *Video (9:16 vertical)*
 (Shopify Files, transcoded by Shopify). That overrides the theme-asset file name.
 
-## Spin to Win — what is still needed to go live
+## Spin to Win
 
-The theme part is installed but stays invisible until the backend answers at
-`/apps/flavwak-spin/state`. To switch it on:
+Runs entirely in the theme (**FW Spin to win** in the header group). No server needed.
 
-1. Create a Dev Dashboard app for the store with scopes
-   `write_discounts, read_discounts, read_customers` and an **App Proxy**
-   (`apps` / `flavwak-spin` → `https://<service>/proxy`) — see
-   `spin-service/shopify.app.toml.example`. Install it on the store.
-2. Deploy `spin-service/` (Railway config and Dockerfile included) with a Postgres
-   database and the variables in `spin-service/.env.example`.
-3. Open `https://flavwak.com/apps/flavwak-spin/state` — it should return JSON with
-   `"ok":true`. Then preview the draft theme: the wheel appears after 3 s.
+- Prizes are four fixed Shopify discount codes created in Discounts as *Spin to Win
+  5% / 10% / 20% / 35%*: no end date, all products and customers, **one use per
+  customer**, don't combine with other discounts (free shipping still applies).
+- Odds (default 60 / 20 / 3 / 1 / 16% no prize) and the codes are set in the theme
+  editor → header → **FW Spin to win**. Leave a code empty and the wheel is hidden.
+- The popup opens 1 s after a visitor's first page view, over a dimmed background.
+  One spin per browser: the result is remembered, a won code stays in a corner
+  badge on every page, and the wheel is not offered again. Closing without spinning
+  leaves a small "Spin to win" button; it doesn't pop up again that visit.
+- The prize is drawn in the browser (crypto RNG) and the codes are embedded encoded,
+  not as plain text. A technical visitor could still dig them out of the page; each
+  code can only be used once per customer, and you can rotate a code any time
+  (change it in Discounts and in the theme setting).
 
-Theme editor → header group → **FW Spin to win** has the texts, delay, proxy path,
-an on/off switch and an editor preview. Odds and prizes live only in
-`spin-service/src/prizes.ts`.
+`spin-service/` holds an optional server-side version (codes created per win, exact
+48 h expiry, cross-device limits) if you ever want the stricter setup; it is not used
+by the theme now.

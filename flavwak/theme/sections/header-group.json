@@ -40,12 +40,20 @@
       "type": "fw-spin-wheel",
       "settings": {
         "enabled": true,
-        "proxy_path": "/apps/flavwak-spin",
         "auto_open": true,
         "delay": 1,
         "hide_on_cart": true,
         "show_teaser": true,
-        "editor_preview": false
+        "editor_preview": false,
+        "code_5": "FLAVWAK5-8MXP4",
+        "code_10": "FLAVWAK10-BPFTZ",
+        "code_20": "FLAVWAK20-JPH3A",
+        "code_35": "FLAVWAK35-PHMEK",
+        "odds_5": 60,
+        "odds_10": 20,
+        "odds_20": 3,
+        "odds_35": 1,
+        "odds_none": 16
       }
     },
     "header": {

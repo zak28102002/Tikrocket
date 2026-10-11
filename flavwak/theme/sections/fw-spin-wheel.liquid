@@ -1,8 +1,7 @@
 {%- comment -%}
-  Spin-to-Win popup. Outcomes and discount codes come from the Flavwak spin service
-  through the Shopify App Proxy (default path /apps/flavwak-spin); nothing about the
-  odds or the prize is decided in the browser. If the proxy is not configured or not
-  reachable, nothing is shown.
+  Spin-to-Win popup. Prizes are fixed Shopify discount codes (no expiry, one use per
+  customer) entered below; the wheel picks the outcome in the browser with the odds
+  set below. If any prize code is missing, the popup is not shown.
 {%- endcomment -%}
 {%- liquid
   assign skip = false
@@ -24,7 +23,19 @@
 
   <script type="application/json" id="FwSpinConfig">
     {
-      "proxy": {{ section.settings.proxy_path | default: '/apps/flavwak-spin' | json }},
+      "prizes": {
+        "p5": {{ section.settings.code_5 | strip | base64_encode | json }},
+        "p10": {{ section.settings.code_10 | strip | base64_encode | json }},
+        "p20": {{ section.settings.code_20 | strip | base64_encode | json }},
+        "p35": {{ section.settings.code_35 | strip | base64_encode | json }}
+      },
+      "odds": {
+        "p5": {{ section.settings.odds_5 | json }},
+        "p10": {{ section.settings.odds_10 | json }},
+        "p20": {{ section.settings.odds_20 | json }},
+        "p35": {{ section.settings.odds_35 | json }},
+        "none": {{ section.settings.odds_none | json }}
+      },
       "delayMs": {{ section.settings.delay | times: 1000 | json }},
       "autoOpen": {{ section.settings.auto_open | json }},
       "teaser": {{ section.settings.show_teaser | json }},
@@ -37,6 +48,7 @@
         "winEyebrow": {{ section.settings.win_eyebrow | json }},
         "loseHeading": {{ section.settings.lose_heading | json }},
         "loseText": {{ section.settings.lose_text | json }},
+        "codeNote": {{ section.settings.code_note | json }},
         "terms": {{ section.settings.terms | json }}
       }
     }
@@ -120,11 +132,23 @@
   "enabled_on": { "groups": ["header"] },
   "settings": [
     { "type": "checkbox", "id": "enabled", "label": "Enable Spin to win", "default": true },
+    { "type": "header", "content": "Prize codes" },
     {
       "type": "paragraph",
-      "content": "Prizes, odds and discount codes are controlled by the Flavwak spin service (server side). The popup stays hidden until that service is connected through the App Proxy below."
+      "content": "Each code must exist under Discounts in Shopify admin (the Spin to Win 5/10/20/35% discounts). If a code is left empty, the popup is not shown."
     },
-    { "type": "text", "id": "proxy_path", "label": "App Proxy path", "default": "/apps/flavwak-spin", "info": "Must match the subpath prefix + subpath configured for the app proxy." },
+    { "type": "text", "id": "code_5", "label": "5% off code", "default": "FLAVWAK5-8MXP4" },
+    { "type": "text", "id": "code_10", "label": "10% off code", "default": "FLAVWAK10-BPFTZ" },
+    { "type": "text", "id": "code_20", "label": "20% off code", "default": "FLAVWAK20-JPH3A" },
+    { "type": "text", "id": "code_35", "label": "35% off code", "default": "FLAVWAK35-PHMEK" },
+    { "type": "header", "content": "Odds (%)" },
+    { "type": "paragraph", "content": "Chance of landing on each prize. They are used as weights, so they should add up to 100." },
+    { "type": "number", "id": "odds_5", "label": "5% off", "default": 60 },
+    { "type": "number", "id": "odds_10", "label": "10% off", "default": 20 },
+    { "type": "number", "id": "odds_20", "label": "20% off", "default": 3 },
+    { "type": "number", "id": "odds_35", "label": "35% off", "default": 1 },
+    { "type": "number", "id": "odds_none", "label": "No prize", "default": 16 },
+    { "type": "header", "content": "Behaviour" },
     { "type": "checkbox", "id": "auto_open", "label": "Open automatically once per visit", "default": true },
     { "type": "range", "id": "delay", "label": "Delay before opening", "min": 0, "max": 20, "step": 1, "unit": "s", "default": 3 },
     { "type": "checkbox", "id": "hide_on_cart", "label": "Don't show on the cart page", "default": true },
@@ -140,12 +164,12 @@
     { "type": "text", "id": "win_eyebrow", "label": "Win eyebrow", "default": "You won" },
     { "type": "text", "id": "lose_heading", "label": "No-prize heading", "default": "Not this time" },
     { "type": "textarea", "id": "lose_text", "label": "No-prize text", "default": "This spin didn't land on a prize. Our multi-pack savings still apply when you buy 2 or 3 packs." },
+    { "type": "text", "id": "code_note", "label": "Line under a won code", "default": "No expiry date · one use per customer" },
     {
       "type": "textarea",
       "id": "terms",
       "label": "Terms line",
-      "info": "{hours} is replaced with the real code validity from the spin service.",
-      "default": "One spin per customer. Codes are single-use, valid for {hours} hours and can't be combined with other discounts, including multi-pack savings."
+      "default": "One spin per customer. Each code can be used once per customer and can't be combined with other discounts, including multi-pack savings."
     },
     { "type": "url", "id": "shop_link", "label": "Continue-shopping link (default: /#flavors)" }
   ],

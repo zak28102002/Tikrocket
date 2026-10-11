@@ -1,9 +1,10 @@
 /*
- * Flavwak Spin to win.
+ * Flavwak Spin to win — runs entirely in the theme.
  *
- * The browser never decides anything: it asks the spin service (via the Shopify App
- * Proxy) for the wheel layout, sends "spin", and animates the wheel onto the segment
- * the server picked. Discount codes shown here were created in Shopify by the server.
+ * Prizes are fixed Shopify discount codes (no expiry, one use per customer), set in
+ * the theme editor. The outcome is drawn here with the browser's cryptographic RNG
+ * using the configured odds, and the wheel animates onto a segment showing it.
+ * One spin per browser: the result is remembered and shown again on later visits.
  */
 (function () {
   if (window.__fwSpin) return;
@@ -15,10 +16,9 @@
   var cfg;
   try { cfg = JSON.parse(cfgEl.textContent); } catch (e) { return; }
 
-  var KEY_VISITOR = 'fw_spin_visitor_v1';
-  var KEY_REWARD = 'fw_spin_reward_v1';
+  var KEY_REWARD = 'fw_spin_reward_v2';
+  var KEY_RESULT = 'fw_spin_result_v2'; // the one spin this browser gets
   var KEY_SESSION = 'fw_spin_session_v1'; // 'shown' | 'done'
-  var KEY_STATE = 'fw_spin_state_v1';
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var $ = function (sel) { return dialog.querySelector(sel); };
@@ -39,55 +39,59 @@
   function loadReward() {
     try {
       var r = JSON.parse(get('localStorage', KEY_REWARD) || 'null');
-      if (r && r.code && r.expiresAt && new Date(r.expiresAt).getTime() > Date.now()) return r;
+      if (r && r.code) return r;
     } catch (e) {}
     del('localStorage', KEY_REWARD);
     return null;
   }
   function saveReward(result) {
-    if (!result || !result.won || !result.code || result.expired) return;
-    set('localStorage', KEY_REWARD, JSON.stringify({ code: result.code, percent: result.percent, expiresAt: result.expiresAt, segmentIndex: result.segmentIndex }));
+    if (!result || !result.won || !result.code) return;
+    set('localStorage', KEY_REWARD, JSON.stringify({ code: result.code, percent: result.percent, segmentIndex: result.segmentIndex }));
   }
 
-  // ---------- network ----------
-  function proxyUrl(path, params) {
-    var q = [];
-    for (var k in params) if (params[k]) q.push(encodeURIComponent(k) + '=' + encodeURIComponent(params[k]));
-    return cfg.proxy.replace(/\/$/, '') + path + (q.length ? '?' + q.join('&') : '');
+  // ---------- prizes & odds ----------
+  // 14 segments: 6 x 5%, 2 x 10%, 1 x 20%, 1 x 35%, 4 x no prize (red). 35% sits under
+  // the pointer at rest, 20% opposite; no two 5% segments touch.
+  var LAYOUT = ['p35', 'p5', 'none', 'p10', 'p5', 'none', 'p5', 'p20', 'p5', 'none', 'p10', 'p5', 'none', 'p5'];
+  var PCT = { p5: 5, p10: 10, p20: 20, p35: 35, none: 0 };
+  var WHEEL = LAYOUT.map(function (k) { return { outcome: k, percent: PCT[k], label: PCT[k] ? PCT[k] + '% off' : 'No prize' }; });
+
+  function decode(v) { try { return v ? atob(v).trim() : ''; } catch (e) { return ''; } }
+  var CODES = {};
+  for (var k in (cfg.prizes || {})) CODES[k] = decode(cfg.prizes[k]);
+  var ODDS = cfg.odds || {};
+
+  // Every prize on the wheel needs a code and odds, or the wheel is not offered at all.
+  function configured() {
+    return ['p5', 'p10', 'p20', 'p35'].every(function (k) { return CODES[k] && Number(ODDS[k]) > 0; });
   }
 
-  function fetchState() {
-    var cached = get('sessionStorage', KEY_STATE);
-    if (cached) { try { return Promise.resolve(JSON.parse(cached)); } catch (e) {} }
-    return fetch(proxyUrl('/state', { visitor: get('localStorage', KEY_VISITOR) }), {
-      credentials: 'same-origin',
-      headers: { Accept: 'application/json' }
-    }).then(function (res) {
-      if (!res.ok) throw new Error('state ' + res.status);
-      return res.json();
-    }).then(function (data) {
-      if (!data || !data.ok || !data.wheel || !data.wheel.length) throw new Error('bad state');
-      if (data.visitor) set('localStorage', KEY_VISITOR, data.visitor);
-      set('sessionStorage', KEY_STATE, JSON.stringify(data));
-      return data;
-    });
+  function randomInt(max) {
+    var c = window.crypto || window.msCrypto;
+    if (c && c.getRandomValues) {
+      // rejection sampling: no modulo bias
+      var lim = Math.floor(4294967296 / max) * max, buf = new Uint32Array(1);
+      do { c.getRandomValues(buf); } while (buf[0] >= lim);
+      return buf[0] % max;
+    }
+    return Math.floor(Math.random() * max);
   }
 
-  function requestSpin() {
-    return fetch(proxyUrl('/spin', {}), {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ visitor: get('localStorage', KEY_VISITOR) })
-    }).then(function (res) {
-      return res.json().catch(function () { return {}; }).then(function (body) {
-        if (res.ok && body.ok && body.result) return body;
-        var err = new Error(body.error || 'http_' + res.status);
-        err.status = res.status;
-        err.retryable = body.retryable !== false;
-        throw err;
-      });
-    });
+  function drawOutcome() {
+    var keys = ['p5', 'p10', 'p20', 'p35', 'none'];
+    var units = keys.map(function (k) { return Math.max(0, Math.round(Number(ODDS[k] || 0) * 100)); });
+    var total = units.reduce(function (a, b) { return a + b; }, 0);
+    var roll = randomInt(total);
+    for (var i = 0; i < keys.length; i++) { if (roll < units[i]) return keys[i]; roll -= units[i]; }
+    return 'none';
+  }
+
+  function spinResult() {
+    var outcome = drawOutcome();
+    var options = [];
+    LAYOUT.forEach(function (key, i) { if (key === outcome) options.push(i); });
+    var won = PCT[outcome] > 0;
+    return { won: won, outcome: outcome, percent: PCT[outcome], segmentIndex: options[randomInt(options.length)], code: won ? CODES[outcome] : null };
   }
 
   // ---------- wheel drawing ----------
@@ -253,16 +257,6 @@
   // ---------- result UI ----------
   var currentResult = null;
 
-  function fmtExpiry(iso) {
-    var d = new Date(iso);
-    var hours = Math.max(0, Math.round((d.getTime() - Date.now()) / 3600000));
-    var when;
-    try {
-      when = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(d);
-    } catch (e) { when = d.toLocaleString(); }
-    return 'Valid until ' + when + (hours >= 1 ? ' (' + hours + ' hour' + (hours === 1 ? '' : 's') + ' left)' : ' (less than an hour left)');
-  }
-
   function showResult(result, opts) {
     currentResult = result;
     opts = opts || {};
@@ -273,12 +267,12 @@
     void box.offsetWidth;
     box.classList.add('is-in');
     var win = $('[data-fw-spin-win]'), lose = $('[data-fw-spin-lose]');
-    if (result.won && result.code && !result.expired) {
+    if (result.won && result.code) {
       win.hidden = false; lose.hidden = true;
       $('[data-fw-spin-win-eyebrow]').textContent = opts.already ? 'Your prize from your spin' : (cfg.text.winEyebrow || 'You won');
       $('[data-fw-spin-result-title]').textContent = result.percent + '% off';
       $('[data-fw-spin-code]').textContent = result.code;
-      $('[data-fw-spin-expiry]').textContent = fmtExpiry(result.expiresAt);
+      $('[data-fw-spin-expiry]').textContent = cfg.text.codeNote || '';
       $('[data-fw-spin-status]').textContent = '';
       var applyBtn = $('[data-fw-spin-apply]');
       applyBtn.textContent = 'Apply discount'; applyBtn.disabled = false; delete applyBtn.dataset.mode;
@@ -288,10 +282,8 @@
       renderDock();
     } else {
       win.hidden = true; lose.hidden = false;
-      $('[data-fw-spin-lose-title]').textContent = result.won && result.expired ? 'Your code has expired' : (cfg.text.loseHeading || 'Not this time');
-      $('[data-fw-spin-lose-text]').textContent = result.won && result.expired
-        ? 'Your ' + result.percent + '% code from your earlier spin has expired.'
-        : (cfg.text.loseText || '');
+      $('[data-fw-spin-lose-title]').textContent = cfg.text.loseHeading || 'Not this time';
+      $('[data-fw-spin-lose-text]').textContent = cfg.text.loseText || '';
       $('[data-fw-spin-lose-title]').focus({ preventScroll: true });
     }
   }
@@ -398,8 +390,7 @@
     if (dialog.open) return;
     if (state && !segments.length) drawWheel(state.wheel);
     dialog.classList.toggle('fw-spin--nowheel', !segments.length);
-    var terms = (cfg.text.terms || '').replace('{hours}', state ? state.codeValidHours : 48);
-    $('[data-fw-spin-terms]').textContent = terms;
+    $('[data-fw-spin-terms]').textContent = cfg.text.terms || '';
     try { dialog.showModal(); } catch (e) { dialog.setAttribute('open', ''); }
     document.documentElement.classList.add('fw-spin-open');
     if (get('sessionStorage', KEY_SESSION) !== 'done') set('sessionStorage', KEY_SESSION, 'shown');
@@ -432,7 +423,7 @@
     if (!segments.length && state) drawWheel(state.wheel);
     if (segments.length && r.segmentIndex !== undefined) setAngle(targetAngleFor(r.segmentIndex));
     open();
-    showResult({ won: true, code: r.code, percent: r.percent, expiresAt: r.expiresAt, expired: false, segmentIndex: r.segmentIndex }, { already: true });
+    showResult({ won: true, code: r.code, percent: r.percent, segmentIndex: r.segmentIndex }, { already: true });
   });
 
   goBtn.addEventListener('click', function () {
@@ -445,87 +436,46 @@
     showMessage('');
     dialog.classList.add('is-spinning');
 
-    var outcome; // undefined = waiting, null = failed, number = target angle
-    var response = null, failure = null;
-    requestSpin().then(function (body) {
-      response = body;
-      outcome = targetAngleFor(body.result.segmentIndex);
-    }, function (err) {
-      failure = err;
-      outcome = null;
-    });
+    // Drawn once, before the wheel moves, and stored straight away so a refresh
+    // mid-spin can't be used to spin again.
+    var result = spinResult();
+    set('localStorage', KEY_RESULT, JSON.stringify(result));
+    saveReward(result);
+    var target = targetAngleFor(result.segmentIndex);
 
-    var anim = reduceMotion
-      ? new Promise(function (resolve) {
-          var wait = setInterval(function () {
-            if (outcome !== undefined) { clearInterval(wait); reducedSpinTo(outcome).then(resolve); }
-          }, 50);
-        })
-      : spinTo(function () { return outcome; });
+    var anim = reduceMotion ? reducedSpinTo(target) : spinTo(function () { return target; });
 
     anim.then(function () {
       spinning = false;
       dialog.classList.remove('is-spinning');
       goBtn.removeAttribute('aria-busy');
-      if (response) {
-        set('sessionStorage', KEY_SESSION, 'done');
-        del('sessionStorage', KEY_STATE);
-        eligible = false;
-        showResult(response.result, { already: response.alreadySpun });
-        return;
-      }
-      goBtn.disabled = false;
-      if (failure && failure.status === 429) {
-        goBtn.disabled = true;
-        goLabel.textContent = 'Spin unavailable';
-        showMessage("This connection has reached today's spin limit. Please try again tomorrow.");
-      } else if (failure && failure.status === 503 && failure.retryable) {
-        goLabel.textContent = 'Try again';
-        showMessage("We couldn't create your discount just now, so nothing was awarded yet. Please try again in a moment.");
-      } else {
-        goLabel.textContent = 'Try again';
-        showMessage('Something went wrong and no discount was created. Please try again.');
-      }
+      set('sessionStorage', KEY_SESSION, 'done');
+      eligible = false;
+      showResult(result);
     });
   });
 
   // ---------- boot ----------
-  function editorPreview() {
-    state = {
-      wheel: ['p35', 'p5', 'none', 'p10', 'p5', 'none', 'p5', 'p20', 'p5', 'none', 'p10', 'p5', 'none', 'p5'].map(function (k) {
-        var pct = { p5: 5, p10: 10, p20: 20, p35: 35, none: 0 }[k];
-        return { outcome: k, percent: pct, label: pct ? pct + '% off' : 'No prize' };
-      }),
-      codeValidHours: 48
-    };
-    open();
+  function loadResult() {
+    try { var r = JSON.parse(get('localStorage', KEY_RESULT) || 'null'); return r && typeof r.won === 'boolean' ? r : null; } catch (e) { return null; }
   }
 
   function boot() {
     renderDock();
+    if (!configured()) return; // missing codes/odds: never show a wheel that can't pay out
+    state = { wheel: WHEEL };
     if (cfg.designMode) {
-      if (cfg.editorPreview) editorPreview();
+      if (cfg.editorPreview) { eligible = true; open(); }
       return;
     }
-    fetchState().then(function (s) {
-      state = s;
-      eligible = !!s.eligible;
-      if (s.result) {
-        set('sessionStorage', KEY_SESSION, 'done');
-        if (s.result.won && s.result.code && !s.result.expired) saveReward(s.result);
-        else if (!s.result.won || s.result.expired) del('localStorage', KEY_REWARD);
-      }
-      renderDock();
-      if (!eligible || !cfg.autoOpen || get('sessionStorage', KEY_SESSION)) return;
-      setTimeout(function () {
-        // Don't interrupt someone who is typing or already in another dialog.
-        if (document.querySelector('dialog[open]:not(#FwSpin), details[open].modal, .menu-drawer-container details[open]')) return;
-        open();
-      }, cfg.delayMs || 0);
-    }).catch(function () {
-      // Spin service not connected or unreachable: show nothing (no fake wheel).
-      renderDock();
-    });
+    eligible = !loadResult();
+    renderDock();
+    if (!eligible || !cfg.autoOpen || get('sessionStorage', KEY_SESSION)) return;
+    setTimeout(function () {
+      // Don't interrupt someone already in another dialog or the menu.
+      if (document.querySelector('dialog[open]:not(#FwSpin), details[open].modal, .menu-drawer-container details[open]')) return;
+      open();
+    }, cfg.delayMs || 0);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
