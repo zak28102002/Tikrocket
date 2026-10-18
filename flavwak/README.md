@@ -19,7 +19,7 @@ Spin to Win.
 | Videos | `sections/fw-videos.liquid`, `assets/flavwak.css`, `assets/flavwak.js`, `assets/fw-ugc-*`, `templates/index.json`, `templates/product*.json` | **FW Vertical videos**: three UGC clips, muted autoplay loop, tap for sound; above the flavour picker on the homepage and under the buy box on every product page. |
 | Spin to Win | `sections/fw-spin-wheel.liquid`, `assets/fw-spin.js`, `assets/fw-spin.css`, `sections/header-group.json` | Popup wheel on every page (header group) with four fixed Shopify codes. |
 | Sale pricing | `sections/fw-product.liquid`, `sections/fw-flavors.liquid`, `assets/flavwak.css`, `templates/product.json` | Pack cards show the paid price, the was-price crossed out and the % off, plus a *Free UK shipping* row on each card. Flavour cards on the homepage show the same. Also fixes the 2/3-pack prices, which were worked out from an old £9.90 price. |
-| Flash sale banner | `snippets/fw-flash-sale.liquid`, `config/settings_schema.json`, `assets/flavwak.css`, `assets/flavwak.js` | Red banner above the pack options and the flavour picker, counting down to a real end time. |
+| Flash sale banner | `snippets/fw-flash-sale.liquid`, `config/settings_schema.json`, `assets/flavwak.css`, `assets/flavwak.js` | Red banner above the pack options and the flavour picker; optional countdown to a real end time. |
 | Top banner | `sections/header-group.json` | "FREE UK SHIPPING · FREE SHIPPING TO EUROPE ON ORDERS £40+". |
 
 ## Videos
@@ -93,8 +93,8 @@ days before the discount.
 
 ## Flash sale banner
 
-Theme settings → **Flash sale**: on/off, **Sale ends** (format `2026-10-25 23:59`, the
-store's time zone) and the banner text. The banner counts down to that time and hides
-itself when it passes. With no end time it is not shown at all. It never restarts per
-visitor: a timer that resets while the price stays the same is a fake urgency claim under
-UK consumer law (DMCC Act 2024).
+Theme settings → **Flash sale**: on/off, banner text and an optional **Sale ends** time
+(format `2026-10-25 23:59`, the store's time zone). With no end time the banner shows the
+sale with no countdown. With an end time it counts down to it and hides when it passes. It
+never restarts per visitor: a timer that resets while the price stays the same is a fake
+urgency claim under UK consumer law (DMCC Act 2024).

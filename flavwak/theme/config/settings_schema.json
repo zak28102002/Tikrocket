@@ -1485,7 +1485,7 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "Banner with a live countdown, shown above the pack options on product pages and above the flavour picker on the homepage. It counts down to the real end time you set and hides itself when that time passes."
+        "content": "Sale banner above the pack options on product pages and above the flavour picker on the homepage. Add an end time to show a live countdown to it."
       },
       {
         "type": "checkbox",
@@ -1497,7 +1497,7 @@
         "type": "text",
         "id": "fw_flash_end",
         "label": "Sale ends (store time)",
-        "info": "Format: 2026-10-25 23:59. Leave empty to hide the banner."
+        "info": "Optional. Format: 2026-10-25 23:59. With an end time the banner counts down and hides when it passes. Leave empty to show the banner without a countdown."
       },
       {
         "type": "text",
