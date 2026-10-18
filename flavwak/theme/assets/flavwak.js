@@ -96,4 +96,25 @@
     }, { threshold: 0.35 });
     vids.forEach(function (v) { vio.observe(v); });
   }
+
+  // Flash sale banner: counts down to the merchant's real end time, hides once it passes.
+  var flashes = [].slice.call(document.querySelectorAll('[data-fw-flash]'));
+  if (flashes.length) {
+    var two = function (n) { return (n < 10 ? '0' : '') + n; };
+    var tickFlash = function () {
+      var now = Date.now(), live = 0;
+      flashes.forEach(function (el) {
+        var end = Number(el.getAttribute('data-end')) * 1000;
+        var left = Math.floor((end - now) / 1000);
+        if (!isFinite(left) || left <= 0) { el.hidden = true; return; }
+        live++;
+        var d = Math.floor(left / 86400), h = Math.floor(left % 86400 / 3600), m = Math.floor(left % 3600 / 60), sec = left % 60;
+        var clock = el.querySelector('[data-fw-flash-clock]');
+        if (clock) clock.textContent = (d ? d + 'd ' : '') + two(h) + ':' + two(m) + ':' + two(sec);
+        el.hidden = false;
+      });
+      if (live) setTimeout(tickFlash, 1000 - (Date.now() % 1000));
+    };
+    tickFlash();
+  }
 })();

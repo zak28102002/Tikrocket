@@ -312,3 +312,74 @@
   .fw-videos--feature .fw-videos__intro .fw-lead { margin-left: 0; }
   .fw-videos--feature .fw-videos__cta { grid-area: cta; align-self: start; text-align: left; margin-top: 10px; }
 }
+
+/* Pack options v2 — card layout: thumbnail · name + per-pack price · now / was / % off, free-UK-shipping row */
+.fw-qty { gap: 16px; }
+.fw-qty__opt {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: 'thumb main price' 'perk perk perk';
+  align-items: center; column-gap: 14px; row-gap: 0; padding: 16px 16px 12px; border-radius: 16px;
+  border: 1.5px solid var(--fw-line); background: #fff;
+}
+.fw-qty__opt.is-active { border: 2px solid var(--fw-green); background: #edf3e9; padding: 15.5px 15.5px 11.5px; }
+.fw-qty__thumb { grid-area: thumb; display: flex; align-items: center; }
+.fw-qty__thumb-img {
+  width: 52px; height: 52px; border-radius: 12px; overflow: hidden; background: var(--fw-ivory);
+  border: 2px solid #fff; box-shadow: 0 2px 8px rgba(28,27,23,.12); flex: none;
+}
+.fw-qty__thumb-img + .fw-qty__thumb-img { margin-left: -30px; }
+.fw-qty__thumb[data-count="2"] .fw-qty__thumb-img:first-child { transform: rotate(-6deg); }
+.fw-qty__thumb[data-count="3"] .fw-qty__thumb-img:first-child { transform: rotate(-8deg); }
+.fw-qty__thumb[data-count="3"] .fw-qty__thumb-img:last-child { transform: rotate(6deg); }
+.fw-qty__main { grid-area: main; display: grid; gap: 2px; min-width: 0; }
+.fw-qty__name { font-size: 17px; font-weight: 800; text-transform: none; letter-spacing: 0; color: var(--fw-ink); }
+.fw-qty__meta { font-size: 14px; color: var(--fw-muted); }
+.fw-qty__price { grid-area: price; display: grid; justify-items: end; gap: 2px; text-align: right; }
+.fw-qty__now { font-size: 20px; font-weight: 800; color: var(--fw-green); line-height: 1.1; }
+.fw-qty__was { font-size: 14px; color: #8d8678; text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.fw-qty__off {
+  display: inline-block; margin-top: 2px; padding: 2px 8px; border-radius: 999px; background: var(--fw-accent);
+  color: var(--fw-ink); font-size: 11px; font-weight: 800; letter-spacing: .04em;
+}
+.fw-qty__perk {
+  grid-area: perk; display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid var(--fw-line); font-size: 13px; font-weight: 700; color: var(--fw-green);
+}
+.fw-qty__opt.is-active .fw-qty__perk { border-top-color: rgba(47,74,44,.2); }
+.fw-qty__tag { top: -11px; right: 18px; padding: 4px 12px; background: var(--fw-green); color: #fff; font-size: 11px; }
+.fw-qty__tag--best { background: var(--fw-ink); color: var(--fw-accent); }
+@media (max-width: 400px) {
+  .fw-qty__opt { column-gap: 10px; padding: 14px 12px 10px; }
+  .fw-qty__opt.is-active { padding: 13.5px 11.5px 9.5px; }
+  .fw-qty__thumb-img { width: 44px; height: 44px; }
+  .fw-qty__thumb-img + .fw-qty__thumb-img { margin-left: -28px; }
+  .fw-qty__name { font-size: 16px; }
+  .fw-qty__meta { font-size: 13px; }
+  .fw-qty__now { font-size: 18px; }
+}
+
+/* Flavour cards: was price + % off */
+.fw-flavor__price { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 4px 6px; }
+.fw-flavor__was { font-size: 12px; font-weight: 500; color: #8d8678; }
+.fw-flavor__off { padding: 1px 6px; border-radius: 999px; background: var(--fw-accent); font-size: 10px; font-weight: 800; }
+
+/* Flash sale banner */
+.fw-flash {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 12px;
+  margin: 0 0 16px; padding: 10px 14px; border-radius: 12px; background: #c8261c; color: #fff;
+  font-size: 13px; font-weight: 700; line-height: 1.3; text-align: center;
+  box-shadow: 0 8px 20px rgba(200,38,28,.22);
+}
+.fw-flash[hidden] { display: none !important; }
+.fw-flash__label {
+  display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px;
+  background: rgba(255,255,255,.18); text-transform: uppercase; letter-spacing: .12em; font-size: 11px; font-weight: 800;
+}
+.fw-flash__clock {
+  display: inline-block; min-width: 76px; padding: 2px 8px; border-radius: 6px; background: #fff; color: #c8261c;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; font-weight: 800;
+}
+.fw-center .fw-flash { display: inline-flex; margin: 10px auto 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .fw-flash__label svg { animation: fw-flash-pulse 1.6s ease-in-out infinite; }
+}
+@keyframes fw-flash-pulse { 50% { opacity: .45; } }

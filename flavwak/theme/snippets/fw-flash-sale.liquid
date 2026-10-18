@@ -1,0 +1,16 @@
+{%- comment -%}
+  Flash sale banner (Theme settings → Flash sale). Counts down to the real end time the
+  merchant sets; stays hidden when no end time is set or once it has passed.
+{%- endcomment -%}
+{%- if settings.fw_flash_enabled and settings.fw_flash_end != blank -%}
+  {%- assign fw_flash_end = settings.fw_flash_end | date: '%s' -%}
+  <script src="{{ 'flavwak.js' | asset_url }}" defer></script>
+  <div class="fw-flash" data-fw-flash data-end="{{ fw_flash_end | escape }}" hidden>
+    <span class="fw-flash__label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
+      Flash sale
+    </span>
+    {%- if settings.fw_flash_text != blank -%}<span class="fw-flash__text">{{ settings.fw_flash_text | escape }}</span>{%- endif -%}
+    <span class="fw-flash__timer">Ends in <span class="fw-flash__clock" data-fw-flash-clock>--:--:--</span></span>
+  </div>
+{%- endif -%}

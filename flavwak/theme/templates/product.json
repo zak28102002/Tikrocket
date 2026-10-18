@@ -22,7 +22,8 @@
         "sticks_per_pack": 3,
         "save_2": 180,
         "save_3": 470,
-        "show_description": false
+        "show_description": false,
+        "base_price": 1390
       }
     },
     "what_is": {

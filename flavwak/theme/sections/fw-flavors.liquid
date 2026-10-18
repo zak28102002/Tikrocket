@@ -5,6 +5,7 @@
       {%- if section.settings.eyebrow != blank -%}<p class="fw-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
       <h2 class="fw-h2">{{ section.settings.heading }}</h2>
       <p class="fw-lead">{{ section.settings.text }}</p>
+      {% render 'fw-flash-sale' %}
     </div>
     <div class="fw-flavors fw-reveal">
       {%- for block in section.blocks -%}
@@ -25,7 +26,14 @@
             <h3 class="fw-flavor__name">{{ flavor }}</h3>
             {%- if desc != blank -%}<p class="fw-flavor__desc">{{ desc }}</p>{%- endif -%}
             <div class="fw-flavor__row">
-              <span class="fw-flavor__price">{{ p.price | money }}</span>
+              <span class="fw-flavor__price">
+                {{ p.price | money }}
+                {% if p.compare_at_price > p.price -%}
+                  {%- assign off = p.compare_at_price | minus: p.price | times: 100.0 | divided_by: p.compare_at_price | round -%}
+                  <s class="fw-flavor__was"><span class="visually-hidden">Was </span>{{ p.compare_at_price | money }}</s>
+                  <span class="fw-flavor__off">−{{ off }}%</span>
+                {%- endif -%}
+              </span>
               <span class="fw-flavor__cta">{% if p.available %}Choose flavor{% else %}View{% endif %}</span>
             </div>
           </div>

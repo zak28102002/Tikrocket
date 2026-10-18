@@ -4,18 +4,41 @@
   assign current_variant = product.selected_or_first_available_variant
   assign flavor = product.title | remove: 'One Pack ' | remove: ' Miswak' | strip
   assign unit = current_variant.price
-  assign base = section.settings.base_price | times: 1
   assign full2 = unit | times: 2
   assign full3 = unit | times: 3
   comment
-    Savings are set in the store currency (pence) and scaled to the shopper's currency.
+    Multi-pack savings are the automatic discounts, set here in store-currency pence.
+    In the store currency they are used as-is; for other currencies they are scaled by
+    the price ratio to the store-currency single-pack price (base_price).
   endcomment
-  assign save2 = full2 | times: section.settings.save_2 | divided_by: base | divided_by: 2
-  assign save3 = full3 | times: section.settings.save_3 | divided_by: base | divided_by: 3
+  if cart.currency.iso_code == shop.currency
+    assign save2 = section.settings.save_2 | times: 1
+    assign save3 = section.settings.save_3 | times: 1
+  else
+    assign base = section.settings.base_price | times: 1
+    assign save2 = unit | times: section.settings.save_2 | divided_by: base
+    assign save3 = unit | times: section.settings.save_3 | divided_by: base
+  endif
   assign total2 = full2 | minus: save2
   assign total3 = full3 | minus: save3
-  assign pct2 = save2 | times: 100.0 | divided_by: full2 | round
-  assign pct3 = save3 | times: 100.0 | divided_by: full3 | round
+  assign per2 = total2 | divided_by: 2
+  assign per3 = total3 | divided_by: 3
+
+  comment
+    Was prices come from the variant compare-at price set in Shopify admin. Without one,
+    multi-packs compare against buying single packs.
+  endcomment
+  assign was_unit = unit
+  if current_variant.compare_at_price > unit
+    assign was_unit = current_variant.compare_at_price
+  endif
+  assign was1 = was_unit
+  assign was2 = was_unit | times: 2
+  assign was3 = was_unit | times: 3
+  assign off1 = was1 | minus: unit | times: 100.0 | divided_by: was1 | round
+  assign off2 = was2 | minus: total2 | times: 100.0 | divided_by: was2 | round
+  assign off3 = was3 | minus: total3 | times: 100.0 | divided_by: was3 | round
+  assign thumb = product.featured_media | default: product.featured_image
   assign sticks = section.settings.sticks_per_pack
   assign form_id = 'FwForm-' | append: section.id
   assign main_id = 'FwMain-' | append: section.id
@@ -72,39 +95,61 @@
         <input type="hidden" name="id" value="{{ current_variant.id }}">
         <input type="hidden" name="quantity" value="3" data-fw-qty>
         <fieldset id="fw-buy" data-fw-hide-sticky class="fw-qty" style="border:0;padding:0;margin:0 0 18px">
-          <legend class="fw-pdp__label" style="width:100%">Quantity</legend>
-
-          <label class="fw-qty__opt">
-            <input type="radio" name="fw_qty" value="1" data-total="{{ unit | money }}">
-            <span class="fw-qty__radio" aria-hidden="true"></span>
-            <span class="fw-qty__main">
-              <span class="fw-qty__name">1 pack</span><br>
-              <span class="fw-qty__meta">{{ sticks }} sticks</span>
-            </span>
-            <span class="fw-qty__price"><span class="fw-qty__now">{{ unit | money }}</span></span>
-          </label>
-
-          <label class="fw-qty__opt">
-            <span class="fw-qty__tag">Popular</span>
-            <input type="radio" name="fw_qty" value="2" data-total="{{ total2 | money }}">
-            <span class="fw-qty__radio" aria-hidden="true"></span>
-            <span class="fw-qty__main">
-              <span class="fw-qty__name">2 packs</span><br>
-              <span class="fw-qty__meta">{{ sticks | times: 2 }} sticks · </span><span class="fw-qty__save">You save {{ save2 | money }} ({{ pct2 }}%)</span>
-            </span>
-            <span class="fw-qty__price"><span class="fw-qty__now">{{ total2 | money }}</span><span class="fw-qty__was">{{ full2 | money }}</span></span>
-          </label>
-
-          <label class="fw-qty__opt is-active">
-            <span class="fw-qty__tag fw-qty__tag--best">Best value</span>
-            <input type="radio" name="fw_qty" value="3" checked data-total="{{ total3 | money }}">
-            <span class="fw-qty__radio" aria-hidden="true"></span>
-            <span class="fw-qty__main">
-              <span class="fw-qty__name">3 packs</span><br>
-              <span class="fw-qty__meta">{{ sticks | times: 3 }} sticks · </span><span class="fw-qty__save">You save {{ save3 | money }} ({{ pct3 }}%)</span>
-            </span>
-            <span class="fw-qty__price"><span class="fw-qty__now">{{ total3 | money }}</span><span class="fw-qty__was">{{ full3 | money }}</span></span>
-          </label>
+          <legend class="fw-pdp__label" style="width:100%">Choose your pack</legend>
+          {% render 'fw-flash-sale' %}
+          {%- liquid
+            capture thumb_img
+              if thumb
+                echo thumb | image_url: width: 160 | image_tag: class: 'fw-img', loading: 'lazy', alt: ''
+              endif
+            endcapture
+          -%}
+          {%- for n in (1..3) -%}
+            {%- liquid
+              case n
+                when 1
+                  assign now = unit
+                  assign was = was1
+                  assign off = off1
+                  assign per = unit
+                  assign tag = ''
+                when 2
+                  assign now = total2
+                  assign was = was2
+                  assign off = off2
+                  assign per = per2
+                  assign tag = 'Most popular'
+                when 3
+                  assign now = total3
+                  assign was = was3
+                  assign off = off3
+                  assign per = per3
+                  assign tag = 'Best value'
+              endcase
+            -%}
+            <label class="fw-qty__opt{% if n == 3 %} is-active{% endif %}">
+              {%- if tag != blank -%}<span class="fw-qty__tag{% if n == 3 %} fw-qty__tag--best{% endif %}">{{ tag }}</span>{%- endif -%}
+              <input type="radio" name="fw_qty" value="{{ n }}"{% if n == 3 %} checked{% endif %} data-total="{{ now | money }}">
+              <span class="fw-qty__thumb" data-count="{{ n }}" aria-hidden="true">
+                {%- for i in (1..n) -%}<span class="fw-qty__thumb-img">{{ thumb_img }}</span>{%- endfor -%}
+              </span>
+              <span class="fw-qty__main">
+                <span class="fw-qty__name">{{ n }} pack{% if n > 1 %}s{% endif %}</span>
+                <span class="fw-qty__meta">{{ per | money }} per pack · {{ sticks | times: n }} sticks</span>
+              </span>
+              <span class="fw-qty__price">
+                <span class="fw-qty__now">{{ now | money }}</span>
+                {%- if was > now -%}
+                  <span class="fw-qty__was"><span class="visually-hidden">Was </span>{{ was | money }}</span>
+                  <span class="fw-qty__off">−{{ off }}%</span>
+                {%- endif -%}
+              </span>
+              <span class="fw-qty__perk">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                Free UK shipping
+              </span>
+            </label>
+          {%- endfor -%}
         </fieldset>
 
         <button type="submit" name="add" class="fw-btn fw-btn--solid fw-btn--block fw-pdp__atc" {% unless current_variant.available %}disabled{% endunless %}>
@@ -120,7 +165,7 @@
       <div class="fw-pdp__trust">
         <div><strong>Natural wood</strong>Salvadora persica</div>
         <div><strong>No nylon</strong>bristles</div>
-        <div><strong>Free shipping</strong>from £40</div>
+        <div><strong>Free UK shipping</strong>Europe from £40</div>
       </div>
 
       {%- if section.settings.show_description and product.description != blank -%}

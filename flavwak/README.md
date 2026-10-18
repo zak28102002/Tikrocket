@@ -17,7 +17,10 @@ Spin to Win.
 | Single / Duo | `config/settings_data.json` | The duplicate selector came from the **Section Store** app's bundle embed. It is now disabled in this theme; the theme's own 1 / 2 / 3-pack buy box (`fw-product`) and the automatic multi-pack discounts are untouched. |
 | Desktop header | `sections/header.liquid`, `snippets/header-dropdown-menu.liquid` | ≥ 990 px: logo left · **Shop miswak** on the true centre (CSS grid with equal side tracks) · How it works / Our story / FAQ + search, account, cart on the right. The menu's own "Shop" link (same URL as the button) is hidden on desktop only. Two new header settings switch either behaviour off. Mobile and tablet render exactly as before. |
 | Videos | `sections/fw-videos.liquid`, `assets/flavwak.css`, `assets/flavwak.js`, `assets/fw-ugc-*`, `templates/index.json`, `templates/product*.json` | **FW Vertical videos**: three UGC clips, muted autoplay loop, tap for sound; above the flavour picker on the homepage and under the buy box on every product page. |
-| Spin to Win | `sections/fw-spin-wheel.liquid`, `assets/fw-spin.js`, `assets/fw-spin.css`, `sections/header-group.json`, `spin-service/` | Popup wheel on every page (header group), driven entirely by the spin service. |
+| Spin to Win | `sections/fw-spin-wheel.liquid`, `assets/fw-spin.js`, `assets/fw-spin.css`, `sections/header-group.json` | Popup wheel on every page (header group) with four fixed Shopify codes. |
+| Sale pricing | `sections/fw-product.liquid`, `sections/fw-flavors.liquid`, `assets/flavwak.css`, `templates/product.json` | Pack cards show the paid price, the was-price crossed out and the % off, plus a *Free UK shipping* row on each card. Flavour cards on the homepage show the same. Also fixes the 2/3-pack prices, which were worked out from an old £9.90 price. |
+| Flash sale banner | `snippets/fw-flash-sale.liquid`, `config/settings_schema.json`, `assets/flavwak.css`, `assets/flavwak.js` | Red banner above the pack options and the flavour picker, counting down to a real end time. |
+| Top banner | `sections/header-group.json` | "FREE UK SHIPPING · FREE SHIPPING TO EUROPE ON ORDERS £40+". |
 
 ## Videos
 
@@ -69,3 +72,29 @@ Runs entirely in the theme (**FW Spin to win** in the header group). No server n
 `spin-service/` holds an optional server-side version (codes created per win, exact
 48 h expiry, cross-device limits) if you ever want the stricter setup; it is not used
 by the theme now.
+
+## Sale pricing
+
+The was-price is each variant's **compare-at price** in Shopify (set to £17.90 on all five
+flavours). Nothing is hard-coded in the theme:
+
+| Option | Was | Pay | Off |
+|---|---|---|---|
+| 1 pack | £17.90 | £13.90 | −22% |
+| 2 packs | £35.80 | £26.00 | −27% |
+| 3 packs | £53.70 | £37.00 | −31% |
+
+The 2- and 3-pack prices are the real automatic discounts (£1.80 and £4.70 off), so the
+cart always charges what the card shows. To end the sale, clear the compare-at price on the
+products: the cards fall back to showing only the genuine multi-pack saving.
+
+EU shoppers: EU price rules expect a was-price to be the lowest price charged in the 30
+days before the discount.
+
+## Flash sale banner
+
+Theme settings → **Flash sale**: on/off, **Sale ends** (format `2026-10-25 23:59`, the
+store's time zone) and the banner text. The banner counts down to that time and hides
+itself when it passes. With no end time it is not shown at all. It never restarts per
+visitor: a timer that resets while the price stays the same is a fake urgency claim under
+UK consumer law (DMCC Act 2024).
