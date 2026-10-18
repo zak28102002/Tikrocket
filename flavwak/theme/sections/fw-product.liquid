@@ -1,0 +1,176 @@
+{{ 'flavwak.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'flavwak.js' | asset_url }}" defer></script>
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign flavor = product.title | remove: 'One Pack ' | remove: ' Miswak' | strip
+  assign unit = current_variant.price
+  assign base = section.settings.base_price | times: 1
+  assign full2 = unit | times: 2
+  assign full3 = unit | times: 3
+  comment
+    Savings are set in the store currency (pence) and scaled to the shopper's currency.
+  endcomment
+  assign save2 = full2 | times: section.settings.save_2 | divided_by: base | divided_by: 2
+  assign save3 = full3 | times: section.settings.save_3 | divided_by: base | divided_by: 3
+  assign total2 = full2 | minus: save2
+  assign total3 = full3 | minus: save3
+  assign pct2 = save2 | times: 100.0 | divided_by: full2 | round
+  assign pct3 = save3 | times: 100.0 | divided_by: full3 | round
+  assign sticks = section.settings.sticks_per_pack
+  assign form_id = 'FwForm-' | append: section.id
+  assign main_id = 'FwMain-' | append: section.id
+  assign main_alt = product.featured_media.alt | default: product.title | escape
+-%}
+
+<section class="fw fw-bg-white fw-pdp">
+  <div class="fw-wrap fw-pdp__grid">
+    <div class="fw-pdp__gallery">
+      <div class="fw-pdp__main fw-media">
+        {%- if product.featured_media -%}
+          {{ product.featured_media | image_url: width: 1600 | image_tag:
+              class: 'fw-img', id: main_id, loading: 'eager', fetchpriority: 'high',
+              sizes: '(min-width: 900px) 55vw, 100vw', widths: '500, 800, 1100, 1600', alt: main_alt }}
+        {%- endif -%}
+      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="fw-pdp__thumbs" role="list">
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              <button type="button" role="listitem" class="fw-pdp__thumb{% if forloop.first %} is-active{% endif %}"
+                data-src="{{ media | image_url: width: 1600 }}" aria-label="Show image {{ forloop.index }}">
+                {{ media | image_url: width: 160 | image_tag: class: 'fw-img', loading: 'lazy', alt: '' }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="fw-pdp__info">
+      <p class="fw-eyebrow">Natural miswak · {{ flavor }}</p>
+      <h1 class="fw-pdp__title">{{ flavor }} flavored miswak</h1>
+      <p class="fw-pdp__sub">Ancient natural oral care with a {{ flavor | downcase }} experience. A toothbrush that grows on a tree: just peel, chew and brush.</p>
+
+      <div class="fw-pdp__pack">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg>
+        <span>Each pack contains <strong>{{ sticks }} natural miswak sticks</strong>.</span>
+      </div>
+
+      {%- assign flavors = section.settings.flavor_products -%}
+      {%- if flavors.size > 1 -%}
+        <p class="fw-pdp__label">Flavor <span>{{ flavor }}</span></p>
+        <div class="fw-flavor-pills">
+          {%- for f in flavors -%}
+            {%- assign fname = f.title | remove: 'One Pack ' | remove: ' Miswak' | strip -%}
+            <a href="{{ f.url }}" class="fw-flavor-pill{% if f.id == product.id %} is-active{% endif %}{% unless f.available %} is-soldout{% endunless %}"
+               {% if f.id == product.id %}aria-current="page"{% endif %}>{{ fname }}</a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- form 'product', product, id: form_id, novalidate: 'novalidate' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+        <input type="hidden" name="quantity" value="3" data-fw-qty>
+        <fieldset id="fw-buy" data-fw-hide-sticky class="fw-qty" style="border:0;padding:0;margin:0 0 18px">
+          <legend class="fw-pdp__label" style="width:100%">Quantity</legend>
+
+          <label class="fw-qty__opt">
+            <input type="radio" name="fw_qty" value="1" data-total="{{ unit | money }}">
+            <span class="fw-qty__radio" aria-hidden="true"></span>
+            <span class="fw-qty__main">
+              <span class="fw-qty__name">1 pack</span><br>
+              <span class="fw-qty__meta">{{ sticks }} sticks</span>
+            </span>
+            <span class="fw-qty__price"><span class="fw-qty__now">{{ unit | money }}</span></span>
+          </label>
+
+          <label class="fw-qty__opt">
+            <span class="fw-qty__tag">Popular</span>
+            <input type="radio" name="fw_qty" value="2" data-total="{{ total2 | money }}">
+            <span class="fw-qty__radio" aria-hidden="true"></span>
+            <span class="fw-qty__main">
+              <span class="fw-qty__name">2 packs</span><br>
+              <span class="fw-qty__meta">{{ sticks | times: 2 }} sticks · </span><span class="fw-qty__save">You save {{ save2 | money }} ({{ pct2 }}%)</span>
+            </span>
+            <span class="fw-qty__price"><span class="fw-qty__now">{{ total2 | money }}</span><span class="fw-qty__was">{{ full2 | money }}</span></span>
+          </label>
+
+          <label class="fw-qty__opt is-active">
+            <span class="fw-qty__tag fw-qty__tag--best">Best value</span>
+            <input type="radio" name="fw_qty" value="3" checked data-total="{{ total3 | money }}">
+            <span class="fw-qty__radio" aria-hidden="true"></span>
+            <span class="fw-qty__main">
+              <span class="fw-qty__name">3 packs</span><br>
+              <span class="fw-qty__meta">{{ sticks | times: 3 }} sticks · </span><span class="fw-qty__save">You save {{ save3 | money }} ({{ pct3 }}%)</span>
+            </span>
+            <span class="fw-qty__price"><span class="fw-qty__now">{{ total3 | money }}</span><span class="fw-qty__was">{{ full3 | money }}</span></span>
+          </label>
+        </fieldset>
+
+        <button type="submit" name="add" class="fw-btn fw-btn--solid fw-btn--block fw-pdp__atc" {% unless current_variant.available %}disabled{% endunless %}>
+          {%- if current_variant.available -%}
+            Add to cart · <span data-fw-total>{{ total3 | money }}</span>
+          {%- else -%}
+            Back soon
+          {%- endif -%}
+        </button>
+        <p class="fw-footnote" style="color:var(--fw-muted);margin-top:10px">Multi-pack savings apply automatically at checkout, also when you mix flavors.</p>
+      {%- endform -%}
+
+      <div class="fw-pdp__trust">
+        <div><strong>Natural wood</strong>Salvadora persica</div>
+        <div><strong>No nylon</strong>bristles</div>
+        <div><strong>Free shipping</strong>from £40</div>
+      </div>
+
+      {%- if section.settings.show_description and product.description != blank -%}
+        <div class="fw-pdp__desc">{{ product.description }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+  <script type="application/ld+json">{{ product | structured_data }}</script>
+</section>
+
+<script>
+  (function () {
+    var root = document.getElementById('FwForm-{{ section.id }}');
+    if (!root) return;
+    var total = root.querySelector('[data-fw-total]');
+    var qty = root.querySelector('[data-fw-qty]');
+    root.addEventListener('submit', function () {
+      root.querySelectorAll('input[name="quantity"]:not([data-fw-qty])').forEach(function (el) { el.remove(); });
+    }, true);
+    root.querySelectorAll('input[name="fw_qty"]').forEach(function (input) {
+      input.addEventListener('change', function () {
+        if (qty) qty.value = input.value;
+        root.querySelectorAll('.fw-qty__opt').forEach(function (o) { o.classList.remove('is-active'); });
+        input.closest('.fw-qty__opt').classList.add('is-active');
+        if (total) total.textContent = input.dataset.total;
+      });
+    });
+    var main = document.getElementById('FwMain-{{ section.id }}');
+    document.querySelectorAll('#shopify-section-{{ section.id }} .fw-pdp__thumb').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!main) return;
+        main.removeAttribute('srcset');
+        main.src = b.dataset.src;
+        document.querySelectorAll('#shopify-section-{{ section.id }} .fw-pdp__thumb').forEach(function (x) { x.classList.remove('is-active'); });
+        b.classList.add('is-active');
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FW Product buy box",
+  "settings": [
+    { "type": "product_list", "id": "flavor_products", "label": "Flavors to show", "limit": 8 },
+    { "type": "number", "id": "sticks_per_pack", "label": "Sticks per pack", "default": 3 },
+    { "type": "number", "id": "base_price", "label": "Single-pack price in store currency (pence)", "default": 990 },
+    { "type": "number", "id": "save_2", "label": "Saving on 2 packs (in pence, must match the automatic discount)", "default": 180 },
+    { "type": "number", "id": "save_3", "label": "Saving on 3 packs (in pence, must match the automatic discount)", "default": 470 },
+    { "type": "checkbox", "id": "show_description", "label": "Show product description", "default": false }
+  ]
+}
+{% endschema %}

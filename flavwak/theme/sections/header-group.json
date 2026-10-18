@@ -17,7 +17,7 @@
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
-            "text": "FREE SHIPPING FROM £40 · SAVE WHEN YOU BUY 2 OR 3 PACKS",
+            "text": "FREE SHIPPING IN UK · SAVE WHEN YOU BUY 2 OR 3 PACKS",
             "link": ""
           }
         }
@@ -27,33 +27,14 @@
       ],
       "settings": {
         "auto_rotate": false,
+        "enable_marquee": true,
+        "marquee_speed": 55,
         "change_slides_speed": 5,
         "color_scheme": "scheme-flavwak-orange",
         "show_line_separator": false,
         "show_social": false,
         "enable_country_selector": false,
-        "enable_language_selector": false,
-        "enable_marquee": true
-      }
-    },
-    "spin-wheel": {
-      "type": "fw-spin-wheel",
-      "settings": {
-        "enabled": true,
-        "auto_open": true,
-        "delay": 1,
-        "hide_on_cart": true,
-        "show_teaser": true,
-        "editor_preview": false,
-        "code_5": "FLAVWAK5-8MXP4",
-        "code_10": "FLAVWAK10-BPFTZ",
-        "code_20": "FLAVWAK20-JPH3A",
-        "code_35": "FLAVWAK35-PHMEK",
-        "odds_5": 60,
-        "odds_10": 20,
-        "odds_20": 3,
-        "odds_35": 1,
-        "odds_none": 16
+        "enable_language_selector": false
       }
     },
     "header": {
@@ -73,9 +54,43 @@
         "show_bundle_builder_button": true,
         "bundle_builder_button_label": "Shop miswak",
         "bundle_builder_url": "/#flavors",
+        "desktop_center_shop_button": true,
+        "desktop_hide_duplicate_shop_link": true,
         "margin_bottom": 0,
         "padding_top": 16,
         "padding_bottom": 16
+      }
+    },
+    "spin-wheel": {
+      "type": "fw-spin-wheel",
+      "settings": {
+        "enabled": true,
+        "code_5": "FLAVWAK5-8MXP4",
+        "code_10": "FLAVWAK10-BPFTZ",
+        "code_20": "FLAVWAK20-JPH3A",
+        "code_35": "FLAVWAK35-PHMEK",
+        "odds_5": 60,
+        "odds_10": 20,
+        "odds_20": 3,
+        "odds_35": 1,
+        "odds_none": 16,
+        "auto_open": true,
+        "delay": 1,
+        "hide_on_cart": true,
+        "show_teaser": true,
+        "editor_preview": false,
+        "eyebrow": "A little welcome gift",
+        "heading": "Spin to win",
+        "text": "Spin for a special offer on your next order.",
+        "spin_label": "Spin the wheel",
+        "dismiss_label": "No thanks, I'll keep shopping",
+        "teaser_label": "Spin to win",
+        "win_eyebrow": "You won",
+        "lose_heading": "Not this time",
+        "lose_text": "This spin didn't land on a prize. Our multi-pack savings still apply when you buy 2 or 3 packs.",
+        "code_note": "No expiry date · one use per customer",
+        "terms": "One spin per customer. Each code can be used once per customer and can't be combined with other discounts, including multi-pack savings.",
+        "shop_link": ""
       }
     }
   },
