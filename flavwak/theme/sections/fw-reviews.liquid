@@ -1,0 +1,98 @@
+{{ 'flavwak.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'flavwak.js' | asset_url }}" defer></script>
+{%- comment -%}
+  Real customer messages: each block is one genuine message (screenshot + translation).
+  Only add messages customers actually sent. Hide names and photos unless they agreed.
+{%- endcomment -%}
+{%- liquid
+  assign filled = 0
+  for block in section.blocks
+    if block.settings.image != blank or block.settings.asset != blank
+      assign filled = filled | plus: 1
+    endif
+  endfor
+-%}
+
+{%- if filled > 0 -%}
+  <section class="fw fw-{{ section.settings.bg }} fw-section fw-reviews" id="{{ section.settings.anchor | default: section.id }}" aria-labelledby="FwReviewsHeading-{{ section.id }}">
+    <div class="fw-wrap">
+      <div class="fw-center fw-reveal">
+        {%- if section.settings.eyebrow != blank -%}<p class="fw-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h2 class="fw-h2" id="FwReviewsHeading-{{ section.id }}">{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}<p class="fw-lead">{{ section.settings.text }}</p>{%- endif -%}
+      </div>
+
+      <ul class="fw-reviews__list" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.image == blank and block.settings.asset == blank -%}{%- continue -%}{%- endif -%}
+          <li class="fw-review fw-reveal" {{ block.shopify_attributes }}>
+            <figure class="fw-review__shot">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', class: 'fw-review__img', alt: block.settings.image_alt, width: 700 }}
+              {%- else -%}
+                <img class="fw-review__img" src="{{ block.settings.asset | asset_url }}" alt="{{ block.settings.image_alt | escape }}" width="700" height="1053" loading="lazy">
+              {%- endif -%}
+            </figure>
+            <div class="fw-review__body">
+              <div class="fw-review__meta">
+                {%- if block.settings.source != blank -%}
+                  <span class="fw-review__source">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>
+                    {{ block.settings.source }}
+                  </span>
+                {%- endif -%}
+                {%- if block.settings.flavor != blank -%}<span class="fw-review__flavor">{{ block.settings.flavor }}</span>{%- endif -%}
+              </div>
+              <blockquote class="fw-review__quote">{{ block.settings.translation }}</blockquote>
+              <p class="fw-review__who">
+                {{- block.settings.author | default: 'Flavwak customer' -}}
+                {%- if block.settings.language != blank %} · Translated from {{ block.settings.language }}{% endif -%}
+              </p>
+              {%- if block.settings.original != blank -%}
+                <details class="fw-review__orig">
+                  <summary>Show original{% if block.settings.language != blank %} ({{ block.settings.language }}){% endif %}</summary>
+                  <div class="fw-review__orig-text">{{ block.settings.original }}</div>
+                </details>
+              {%- endif -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "FW Customer messages",
+  "class": "fw-reviews-section",
+  "settings": [
+    { "type": "paragraph", "content": "Only add real messages customers sent you. Hide names and photos unless the customer agreed to be shown." },
+    { "type": "text", "id": "anchor", "label": "Anchor id", "default": "reviews" },
+    { "type": "select", "id": "bg", "label": "Background", "default": "bg-sand", "options": [
+      { "value": "bg-ivory", "label": "Ivory" }, { "value": "bg-white", "label": "White" }, { "value": "bg-sand", "label": "Sand" }
+    ] },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "From our customers" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Real messages, real people." },
+    { "type": "text", "id": "text", "label": "Text" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Message",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Screenshot" },
+        { "type": "text", "id": "asset", "label": "Or theme asset file name", "info": "Used when no screenshot is picked above." },
+        { "type": "text", "id": "image_alt", "label": "Screenshot alt text", "default": "Screenshot of a customer message" },
+        { "type": "richtext", "id": "translation", "label": "Message (English)" },
+        { "type": "richtext", "id": "original", "label": "Original message", "info": "Shown under \"Show original\". Leave empty if the message is in English." },
+        { "type": "text", "id": "language", "label": "Original language", "info": "e.g. German. Leave empty for English messages." },
+        { "type": "text", "id": "author", "label": "Name shown", "default": "Flavwak customer" },
+        { "type": "text", "id": "flavor", "label": "Flavour tag" },
+        { "type": "text", "id": "source", "label": "Source line", "default": "Message received on TikTok" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "FW Customer messages" }]
+}
+{% endschema %}

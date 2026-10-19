@@ -19,8 +19,9 @@ Spin to Win.
 | Videos | `sections/fw-videos.liquid`, `assets/flavwak.css`, `assets/flavwak.js`, `assets/fw-ugc-*`, `templates/index.json`, `templates/product*.json` | **FW Vertical videos**: three UGC clips, muted autoplay loop, tap for sound; above the flavour picker on the homepage and under the buy box on every product page. |
 | Spin to Win | `sections/fw-spin-wheel.liquid`, `assets/fw-spin.js`, `assets/fw-spin.css`, `sections/header-group.json` | Popup wheel on every page (header group) with four fixed Shopify codes. |
 | Sale pricing | `sections/fw-product.liquid`, `sections/fw-flavors.liquid`, `assets/flavwak.css`, `templates/product.json` | Pack cards show the paid price, the was-price crossed out and the % off, plus a *Free UK shipping* row on each card. Flavour cards on the homepage show the same. Also fixes the 2/3-pack prices, which were worked out from an old £9.90 price. |
+| Customer messages | `sections/fw-reviews.liquid`, `assets/fw-review-tiktok-1.jpg`, `templates/index.json`, `templates/product.json` | Real TikTok message (screenshot + English translation, name and photo hidden) under the buy box on every product page and above the flavour picker on the homepage. |
 | Flash sale banner | `snippets/fw-flash-sale.liquid`, `config/settings_schema.json`, `assets/flavwak.css`, `assets/flavwak.js` | Red banner above the pack options and the flavour picker; optional countdown to a real end time. |
-| Top banner | `sections/header-group.json` | "FREE UK SHIPPING · FREE SHIPPING TO EUROPE ON ORDERS £40+". |
+| Top banner | `sections/header-group.json` | "FREE UK SHIPPING · FREE SHIPPING TO EUROPE ON ORDERS €50+". The Shopify free-shipping discount starts at £40 (about €46–49), so everyone at €50 qualifies. |
 
 ## Videos
 
@@ -98,3 +99,11 @@ Theme settings → **Flash sale**: on/off, banner text and an optional **Sale en
 sale with no countdown. With an end time it counts down to it and hides when it passes. It
 never restarts per visitor: a timer that resets while the price stays the same is a fake
 urgency claim under UK consumer law (DMCC Act 2024).
+
+## Customer messages
+
+**FW Customer messages** shows real messages customers sent, one block each: screenshot,
+English translation, optional original text, flavour tag and source line. Add only genuine
+messages (inventing or editing reviews is illegal under the DMCC Act 2024). Hide names and
+photos unless the customer agreed. The first block is a German TikTok message about the
+clove miswak; its screenshot has the sender's name and photos replaced with grey shapes.

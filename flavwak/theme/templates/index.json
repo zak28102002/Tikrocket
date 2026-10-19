@@ -491,6 +491,34 @@
       "settings": {
         "label": "Shop miswak"
       }
+    },
+    "reviews": {
+      "type": "fw-reviews",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "asset": "fw-review-tiktok-1.jpg",
+            "image_alt": "Screenshot of a TikTok message from a customer, in German, about Flavwak clove miswak",
+            "translation": "<p>Hey!!! I discovered your clove miswaks through @DoctorAymen. Cloves are known for being anti-inflammatory. I'd actually had pain in the back of my jaw the whole time. After using your miswaks, the pain eased. At first I thought it was a coincidence, but when I tried it a second time, the same thing happened.</p><p>I just wanted to say thank you!! What you've brought to the market is really great.</p>",
+            "original": "<p>Hey!!! Ich habe über @DoctorAymen eure Nelken miswaks entdeckt. Nelken sind ja bekannt dafür das sie entzündungshemmend sind. Ich hatte tatsächlich die ganze Zeit einen Schmerz im hinteren Kiefer Bereich. Nachdem ich eure miswaks benutzt habe haben die Schmerzen nachgelassen. Erst dachte ich das wäre Zufall aber nachdem ich es ein zweites Mal probiert habe ist das selbe dabei rausgekommen</p><p>Ich wollte nur mal Danke sagen!! Das ist echt stark was ihr da auf den Markt gebracht habt</p>",
+            "language": "German",
+            "author": "Flavwak customer",
+            "flavor": "Clove miswak",
+            "source": "Message received on TikTok · 30 Aug"
+          }
+        }
+      },
+      "block_order": [
+        "r1"
+      ],
+      "settings": {
+        "anchor": "reviews",
+        "bg": "bg-sand",
+        "eyebrow": "From our customers",
+        "heading": "Real messages, real people.",
+        "text": ""
+      }
     }
   },
   "order": [
@@ -501,6 +529,7 @@
     "benefits",
     "why",
     "videos",
+    "reviews",
     "flavors",
     "howto",
     "faq",

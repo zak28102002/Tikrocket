@@ -383,3 +383,41 @@
   .fw-flash__label svg { animation: fw-flash-pulse 1.6s ease-in-out infinite; }
 }
 @keyframes fw-flash-pulse { 50% { opacity: .45; } }
+
+/* 3-pack thumbnail: middle pack raised and in front so all three show */
+.fw-qty__thumb[data-count="3"] { padding-top: 10px; }
+.fw-qty__thumb[data-count="3"] .fw-qty__thumb-img { position: relative; }
+.fw-qty__thumb[data-count="3"] .fw-qty__thumb-img:nth-child(2) { z-index: 2; transform: translateY(-10px); box-shadow: 0 6px 14px rgba(28,27,23,.2); }
+
+/* Customer messages */
+.fw-reviews__list { list-style: none; margin: 36px auto 0; padding: 0; display: grid; gap: 28px; max-width: 960px; }
+.fw-review {
+  display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 36px; align-items: center;
+  padding: 28px; border-radius: 24px; background: #fff; box-shadow: 0 10px 30px rgba(28,27,23,.08);
+}
+.fw-review__shot {
+  margin: 0; border-radius: 22px; overflow: hidden; border: 6px solid var(--fw-ink);
+  box-shadow: 0 12px 28px rgba(28,27,23,.18); background: #fff;
+}
+.fw-review__img { display: block; width: 100%; height: auto; }
+.fw-review__meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.fw-review__source, .fw-review__flavor {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; letter-spacing: .02em;
+}
+.fw-review__source { background: var(--fw-ivory); color: var(--fw-ink); }
+.fw-review__flavor { background: var(--fw-green); color: #fff; }
+.fw-review__quote { margin: 0; padding: 0; border: 0; font-style: normal; font-size: clamp(17px, 1.9vw, 20px); line-height: 1.55; color: var(--fw-ink); }
+.fw-review__quote p { margin: 0 0 12px; }
+.fw-review__quote p:first-child::before { content: '\201C'; }
+.fw-review__quote p:last-child { margin-bottom: 0; }
+.fw-review__quote p:last-child::after { content: '\201D'; }
+.fw-review__who { margin: 16px 0 0; font-size: 14px; font-weight: 700; color: var(--fw-green); }
+.fw-review__orig { margin-top: 14px; font-size: 14px; color: var(--fw-muted); }
+.fw-review__orig summary { cursor: pointer; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.fw-review__orig-text { margin-top: 10px; line-height: 1.55; }
+.fw-review__orig-text p { margin: 0 0 8px; }
+@media (max-width: 749px) {
+  .fw-review { grid-template-columns: 1fr; gap: 22px; padding: 18px; }
+  .fw-review__shot { max-width: 300px; margin: 0 auto; }
+}
